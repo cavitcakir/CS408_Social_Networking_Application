@@ -1,4 +1,4 @@
-﻿namespace cs408_Social_Networking_Application
+﻿namespace client
 {
     partial class Form1
     {

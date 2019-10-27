@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace cs408_Social_Networking_Application.Properties
+namespace server.Properties
 {
 
 

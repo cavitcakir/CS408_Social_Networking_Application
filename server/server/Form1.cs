@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace cs408_Social_Networking_Application
+namespace server
 {
     public partial class Form1 : Form
     {

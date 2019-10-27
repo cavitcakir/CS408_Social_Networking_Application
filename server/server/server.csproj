@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A63C7E7D-BED3-48E3-9957-90E7504AE791}</ProjectGuid>
+    <ProjectGuid>{44345ED9-5513-4D86-9AAA-9FEFE8F112FE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cs408_Social_Networking_Application</RootNamespace>
-    <AssemblyName>cs408_Social_Networking_Application</AssemblyName>
+    <RootNamespace>server</RootNamespace>
+    <AssemblyName>server</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

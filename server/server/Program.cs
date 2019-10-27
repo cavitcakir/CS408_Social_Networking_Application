@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace cs408_Social_Networking_Application
+namespace server
 {
     static class Program
     {
