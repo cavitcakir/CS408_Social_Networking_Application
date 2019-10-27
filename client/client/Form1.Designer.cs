@@ -71,6 +71,7 @@
             // 
             // logBox
             // 
+            this.logBox.Enabled = false;
             this.logBox.Location = new System.Drawing.Point(198, 26);
             this.logBox.Name = "logBox";
             this.logBox.Size = new System.Drawing.Size(375, 115);
@@ -110,6 +111,7 @@
             // 
             // textBox_Message
             // 
+            this.textBox_Message.Enabled = false;
             this.textBox_Message.Location = new System.Drawing.Point(198, 160);
             this.textBox_Message.Name = "textBox_Message";
             this.textBox_Message.Size = new System.Drawing.Size(257, 20);
@@ -126,21 +128,25 @@
             // 
             // button_sendmessage
             // 
+            this.button_sendmessage.Enabled = false;
             this.button_sendmessage.Location = new System.Drawing.Point(461, 160);
             this.button_sendmessage.Name = "button_sendmessage";
             this.button_sendmessage.Size = new System.Drawing.Size(112, 23);
             this.button_sendmessage.TabIndex = 20;
             this.button_sendmessage.Text = "Send Message";
             this.button_sendmessage.UseVisualStyleBackColor = true;
+            this.button_sendmessage.Click += new System.EventHandler(this.button_sendmessage_Click);
             // 
             // button_disconnect
             // 
+            this.button_disconnect.Enabled = false;
             this.button_disconnect.Location = new System.Drawing.Point(59, 157);
             this.button_disconnect.Name = "button_disconnect";
             this.button_disconnect.Size = new System.Drawing.Size(133, 23);
             this.button_disconnect.TabIndex = 21;
             this.button_disconnect.Text = "disconnect";
             this.button_disconnect.UseVisualStyleBackColor = true;
+            this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             // 
             // Form1
             // 

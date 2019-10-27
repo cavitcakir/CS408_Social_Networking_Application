@@ -106,12 +106,22 @@ namespace server
             {
                 try
                 {
-                    Byte[] buffer = new Byte[64];
-                    thisClient.Receive(buffer);
+                    
+                        Byte[] buffer = new Byte[64];
+                        thisClient.Receive(buffer);
 
-                    string incomingMessage = Encoding.Default.GetString(buffer);
-                    incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
-                    textBox_logs.AppendText("Client: " + incomingMessage + "\n");
+                        string incomingMessage = Encoding.Default.GetString(buffer);
+                        incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
+                    if(incomingMessage == "")
+                    {
+                        connected = false;
+                        textBox_logs.AppendText("A client has disconnected\n");
+                    }
+                    else
+                        textBox_logs.AppendText("Client: " + incomingMessage + "\n");
+                        
+                        
+                    
                 }
                 catch
                 {

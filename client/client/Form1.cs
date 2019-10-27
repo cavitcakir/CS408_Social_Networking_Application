@@ -34,11 +34,11 @@ namespace client
 
         private void button_connect_Click(object sender, EventArgs e)
         {
+            terminating = false;
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             string IP = textBox_IP.Text;
             int portNum;
             string name = textBox_Name.Text;
-
 
             if (name != "" && name.Length <= 64)
             {
@@ -46,12 +46,14 @@ namespace client
                 {
                     try
                     {
-
                         clientSocket.Connect(IP, portNum);
-                        RequestSend();
+                        send_message(name);
                         if (isAuthorized())
                         {
                             button_connect.Enabled = false;
+                            button_disconnect.Enabled = true;
+                            button_sendmessage.Enabled = true;
+                            textBox_Message.Enabled = true;
                             connected = true;
                             logBox.AppendText("Connection established...\n");
 
@@ -68,8 +70,6 @@ namespace client
                     {
                         logBox.AppendText("Could not connect to the server!\n");
                     }
-                    
-
                 }
                 else
                 {
@@ -96,17 +96,9 @@ namespace client
             else
                 return false;
         }
-        private void RequestSend()
-        {
-            string name = textBox_Name.Text;
-            Byte[] buffer = new Byte[64];
-            buffer = Encoding.Default.GetBytes(name);
-            clientSocket.Send(buffer);
-
-        }
+        
         private void Receive()
         {
-
             try
             {
                 Byte[] buffer = new Byte[64];
@@ -115,7 +107,7 @@ namespace client
                 string incomingMessage = Encoding.Default.GetString(buffer);
                 incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
 
-                logBox.AppendText("Server: " + incomingMessage + "\n");
+                logBox.AppendText(incomingMessage + "\n");
 
             }
             catch
@@ -129,6 +121,37 @@ namespace client
                 clientSocket.Close();
                 connected = false;
             }
+
+        }
+
+        private void send_message(string message)
+        {
+            Byte[] buffer = new Byte[64];
+            buffer = Encoding.Default.GetBytes(message);
+            clientSocket.Send(buffer);
+        }
+
+        private void button_sendmessage_Click(object sender, EventArgs e)
+        {
+            string name = textBox_Name.Text;
+            string message = name + " -> " + textBox_Message.Text;
+
+            if (message != "" && message.Length <= 64)
+            {
+                send_message(message);
+                logBox.AppendText(message);
+            }
+
+        }
+
+        private void button_disconnect_Click(object sender, EventArgs e)
+        {
+            connected = false;
+            button_connect.Enabled = true;
+            button_disconnect.Enabled = false;
+            button_sendmessage.Enabled = false;
+            textBox_Message.Enabled = false;
+            logBox.AppendText("Disconnected");
 
         }
     }
