@@ -48,19 +48,27 @@ namespace client
                     {
 
                         clientSocket.Connect(IP, portNum);
-                        button_connect.Enabled = false;
-                        connected = true;
-                        logBox.AppendText("Connection established...\n");
+                        RequestSend();
+                        if (isAuthorized())
+                        {
+                            button_connect.Enabled = false;
+                            connected = true;
+                            logBox.AppendText("Connection established...\n");
 
-                        Thread receiveThread = new Thread(Receive);
-                        receiveThread.Start();
+                            Thread receiveThread = new Thread(Receive);
+                            receiveThread.Start();
+                        }
+                        else
+                        {
+                            logBox.AppendText("Check your username.\n");
+                        }
 
                     }
                     catch
                     {
                         logBox.AppendText("Could not connect to the server!\n");
                     }
-                    RequestSend();
+                    
 
                 }
                 else
@@ -73,13 +81,28 @@ namespace client
                 logBox.AppendText("Check the name\n");
             }
         }
+
+        private bool isAuthorized()
+        {
+            Byte[] buffer = new Byte[64];
+            clientSocket.Receive(buffer);
+            string incomingMessage = Encoding.Default.GetString(buffer);
+            incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
+            
+            if (incomingMessage != "not authorized")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
         private void RequestSend()
         {
             string name = textBox_Name.Text;
             Byte[] buffer = new Byte[64];
             buffer = Encoding.Default.GetBytes(name);
             clientSocket.Send(buffer);
-            logBox.AppendText("Your message has been sent.\n");
+
         }
         private void Receive()
         {

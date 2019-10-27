@@ -39,12 +39,24 @@ namespace server
             {
                 try
                 {
-                    Socket newClient = serverSocket.Accept();
-                    clientSockets.Add(newClient);
-                    textBox_logs.AppendText("A client is connected.\n");
 
-                    Thread receiveThread = new Thread(Receive);
-                    receiveThread.Start();
+                    Socket newClient = serverSocket.Accept();
+                    Byte[] buffer = new Byte[64];
+                    if (checkClient(newClient)){
+                        buffer = Encoding.Default.GetBytes("authorized");
+                        newClient.Send(buffer);
+                        clientSockets.Add(newClient);
+                        textBox_logs.AppendText("A client is connected.\n");
+
+                        Thread receiveThread = new Thread(Receive);
+                        receiveThread.Start();
+                    }
+                    else{
+                        
+                        buffer = Encoding.Default.GetBytes("not authorized");
+                        newClient.Send(buffer);
+                        newClient.Close();
+                    }
                 }
                 catch
                 {
@@ -61,6 +73,30 @@ namespace server
             }
         }
 
+        private bool checkClient(Socket thisClient)
+        {
+            try
+            {
+                Byte[] buffer = new Byte[64];
+                thisClient.Receive(buffer);
+
+                string incomingMessage = Encoding.Default.GetString(buffer);
+                incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
+                if (incomingMessage == "cavit" || incomingMessage == "ceren")
+                {
+                    return true;
+                }
+                else
+                {
+                    textBox_logs.AppendText(incomingMessage + " is faking.\n");
+                    return false;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
         private void Receive()
         {
             Socket thisClient = clientSockets[clientSockets.Count() - 1];
