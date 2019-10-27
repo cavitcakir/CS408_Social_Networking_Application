@@ -96,14 +96,19 @@ namespace server
 
             if (Int32.TryParse(textBox_port.Text, out serverPort))
             {
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, serverPort);
-                serverSocket.Bind(endPoint);
-                serverSocket.Listen(3);
-
+                try
+                {
+                    IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, serverPort);
+                    serverSocket.Bind(endPoint);
+                    serverSocket.Listen(300);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+               
                 listening = true;
                 button_listen.Enabled = false;
-                //textBox_message.Enabled = true;
-                //button_send.Enabled = true;
 
                 Thread acceptThread = new Thread(Accept);
                 acceptThread.Start();
