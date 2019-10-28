@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace client
@@ -34,21 +28,22 @@ namespace client
 
         private void button_connect_Click(object sender, EventArgs e)
         {
-            terminating = false;
+            terminating = false; // to connect after disconnect
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             string IP = textBox_IP.Text;
             int portNum;
-            string name = textBox_Name.Text;
+            string name = textBox_Name.Text, serverRespond = "";
 
-            if (name != "" && name.Length <= 64)
+            if (name != "" && name.Length <= 64) // if name is not empty and longer than 64
             {
                 if (Int32.TryParse(textBox_Port.Text, out portNum))
                 {
                     try
                     {
                         clientSocket.Connect(IP, portNum);
-                        send_message(name);
-                        if (isAuthorized())
+                        send_message(name); // we send our username to server and wait for respond
+                        serverRespond = receiveOneMessage(); // we got our respond
+                        if (serverRespond != "already connected" && serverRespond != "not authorized")
                         {
                             button_connect.Enabled = false;
                             button_disconnect.Enabled = true;
@@ -60,11 +55,14 @@ namespace client
                             Thread receiveThread = new Thread(Receive);
                             receiveThread.Start();
                         }
-                        else
+                        else if (serverRespond == "not authorized")
                         {
-                            logBox.AppendText("Check your username.\n");
+                            logBox.AppendText("You are not registered.\n");
                         }
-
+                        else if (serverRespond == "already connected")
+                        {
+                            logBox.AppendText("You are already connected.\n");
+                        }
                     }
                     catch
                     {
@@ -82,46 +80,39 @@ namespace client
             }
         }
 
-        private bool isAuthorized()
+        private string receiveOneMessage() // this function receives only one message
         {
             Byte[] buffer = new Byte[64];
             clientSocket.Receive(buffer);
             string incomingMessage = Encoding.Default.GetString(buffer);
             incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
-            
-            if (incomingMessage != "not authorized")
-            {
-                return true;
-            }
-            else
-                return false;
+            return incomingMessage;
         }
-        
+
         private void Receive()
         {
-            try
+            while (true && connected)
             {
-                Byte[] buffer = new Byte[64];
-                clientSocket.Receive(buffer);
-
-                string incomingMessage = Encoding.Default.GetString(buffer);
-                incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
-
-                logBox.AppendText(incomingMessage + "\n");
-
-            }
-            catch
-            {
-                if (!terminating)
+                try
                 {
-                    logBox.AppendText("The server has disconnected\n");
-                    button_connect.Enabled = true;
+                    string incomingMessage = receiveOneMessage();
+                    logBox.AppendText(incomingMessage);
                 }
-
-                clientSocket.Close();
-                connected = false;
+                catch
+                {
+                    if (!terminating)
+                    {
+                        button_connect.Enabled = true;
+                        button_disconnect.Enabled = false;
+                        button_sendmessage.Enabled = false;
+                        textBox_Message.Enabled = false;
+                        clientSocket.Disconnect(true);
+                        logBox.AppendText("The server has disconnected\n");
+                    }
+                    clientSocket.Close();
+                    connected = false;
+                }
             }
-
         }
 
         private void send_message(string message)
@@ -133,13 +124,11 @@ namespace client
 
         private void button_sendmessage_Click(object sender, EventArgs e)
         {
-            string name = textBox_Name.Text;
-            string message =  textBox_Message.Text;
-
+            string message = textBox_Message.Text;
             if (message != "" && message.Length <= 64)
             {
                 send_message(message);
-                logBox.AppendText(message);
+                logBox.AppendText(message + "\n");
             }
 
         }
@@ -152,9 +141,7 @@ namespace client
             button_sendmessage.Enabled = false;
             textBox_Message.Enabled = false;
             clientSocket.Disconnect(false);
-            logBox.AppendText("Disconnected");
-
+            logBox.AppendText("Disconnected\n");
         }
     }
-
 }

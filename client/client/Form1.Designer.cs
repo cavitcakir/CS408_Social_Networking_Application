@@ -71,7 +71,6 @@
             // 
             // logBox
             // 
-            this.logBox.Enabled = false;
             this.logBox.Location = new System.Drawing.Point(198, 26);
             this.logBox.Name = "logBox";
             this.logBox.Size = new System.Drawing.Size(375, 115);

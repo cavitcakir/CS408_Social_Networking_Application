@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -16,7 +17,10 @@ namespace server
     public partial class Form1 : Form
     {
         Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        List<Socket> clientSockets = new List<Socket>();
+        Dictionary<string, Socket> clientSocketsDictionary = new Dictionary<string, Socket>();
+        List<string> connectedNames = new List<string>();
+        List<string> registeredUsers = new List<string>();
+
 
         bool terminating = false;
         bool listening = false;
@@ -33,28 +37,62 @@ namespace server
             terminating = true;
             Environment.Exit(0);
         }
+
+        private void readFile()
+        {
+            string line;
+            var path = Path.Combine(Directory.GetCurrentDirectory() ,"user_db.txt");
+            System.IO.StreamReader file =new  System.IO.StreamReader(path);
+            while((line = file.ReadLine()) != null)
+            {
+                registeredUsers.Add(line);
+            }
+            file.Close();
+        }
+        private void send_message(Socket clientSocket,string message)
+        {
+            Byte[] buffer = new Byte[64];
+            buffer = Encoding.Default.GetBytes(message);
+            clientSocket.Send(buffer);
+        }
+        private string receiveOneMessage(Socket clientSocket) // this function receives only one message
+        {
+            Byte[] buffer = new Byte[64];
+            clientSocket.Receive(buffer);
+            string incomingMessage = Encoding.Default.GetString(buffer);
+            incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
+            return incomingMessage;
+        }
+
         private void Accept()
         {
             while (listening)
             {
                 try
                 {
-
+                    string name ="";
                     Socket newClient = serverSocket.Accept();
-                    Byte[] buffer = new Byte[64];
-                    if (checkClient(newClient)){
-                        buffer = Encoding.Default.GetBytes("authorized");
-                        newClient.Send(buffer);
-                        clientSockets.Add(newClient);
-                        textBox_logs.AppendText("A client is connected.\n");
+                    if (checkClient(newClient,ref name)){
+                        if (!clientSocketsDictionary.ContainsKey(name))
+                        {
+                            send_message(newClient, "authorized\n");
+                            clientSocketsDictionary.Add(name, newClient);
+                            connectedNames.Add(name);
+                            textBox_logs.AppendText(name + " is connected.\n");
 
-                        Thread receiveThread = new Thread(Receive);
-                        receiveThread.Start();
+                            Thread receiveThread = new Thread(Receive);
+                            receiveThread.Start();
+                        }
+                        else
+                        {
+                            textBox_logs.AppendText(name + " is trying to connect again\n");
+                            send_message(newClient, "already connected");
+                            newClient.Close();
+                        }
                     }
                     else{
-                        
-                        buffer = Encoding.Default.GetBytes("not authorized");
-                        newClient.Send(buffer);
+                        textBox_logs.AppendText(name + " is trying to connect but not registered\n");
+                        send_message(newClient, "not authorized");
                         newClient.Close();
                     }
                 }
@@ -73,22 +111,20 @@ namespace server
             }
         }
 
-        private bool checkClient(Socket thisClient)
+        private bool checkClient(Socket thisClient, ref string name)
         {
             try
             {
-                Byte[] buffer = new Byte[64];
-                thisClient.Receive(buffer);
+                string incomingMessage = receiveOneMessage(thisClient);
 
-                string incomingMessage = Encoding.Default.GetString(buffer);
-                incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
-                if (incomingMessage == "cavit" || incomingMessage == "ceren")
+                if (registeredUsers.Contains(incomingMessage))
                 {
+                    name = incomingMessage;
                     return true;
                 }
                 else
                 {
-                    textBox_logs.AppendText(incomingMessage + " is faking.\n");
+                    name = incomingMessage;
                     return false;
                 }
             }
@@ -99,44 +135,58 @@ namespace server
         }
         private void Receive()
         {
-            Socket thisClient = clientSockets[clientSockets.Count() - 1];
+            string name = connectedNames[connectedNames.Count() - 1];
+            Socket thisClient = clientSocketsDictionary[name];
             bool connected = true;
 
             while (connected && !terminating)
             {
                 try
                 {
-                        Byte[] buffer = new Byte[64];
-                        thisClient.Receive(buffer);
-
-                        string incomingMessage = Encoding.Default.GetString(buffer);
-                        incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
-                    if(incomingMessage == "")
+                    string incomingMessage = receiveOneMessage(thisClient);
+                    if (incomingMessage == "")
                     {
                         connected = false;
-                        textBox_logs.AppendText("A client has disconnected\n");
+                        textBox_logs.AppendText(name + " has disconnected\n");
                     }
                     else
-                        textBox_logs.AppendText("Client: " + incomingMessage + "\n");
-                        
+                    {
+                        textBox_logs.AppendText(name + ": " + incomingMessage + "\n");
+                        foreach (string clientName in connectedNames)
+                        {
+                            if (clientName != name)
+                            {
+                                Socket tempSocket = clientSocketsDictionary[clientName];
+                                send_message(tempSocket, (name + ": "));
+                                send_message(tempSocket, (incomingMessage + "\n"));
+                            }
+                        }
+                    }
                 }
                 catch
                 {
                     if (!terminating || !connected)
                     {
-                        textBox_logs.AppendText("A client has disconnected\n");
+                        textBox_logs.AppendText(name +" has disconnected\n");
                     }
                     thisClient.Close();
-                    clientSockets.Remove(thisClient);
+                    connectedNames.Remove(name);
+                    clientSocketsDictionary.Remove(name);
                     connected = false;
                 }
-            } 
+            }
+            if (!connected)
+            {
+                thisClient.Close();
+                connectedNames.Remove(name);
+                clientSocketsDictionary.Remove(name);
+            }
         }
 
         private void button_listen_Click(object sender, EventArgs e)
         {
             int serverPort;
-
+            readFile();
             if (Int32.TryParse(textBox_port.Text, out serverPort))
             {
                 try
@@ -157,7 +207,6 @@ namespace server
                 acceptThread.Start();
 
                 textBox_logs.AppendText("Started listening on port: " + serverPort + "\n");
-
             }
             else
             {
