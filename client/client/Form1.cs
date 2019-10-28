@@ -134,7 +134,7 @@ namespace client
         private void button_sendmessage_Click(object sender, EventArgs e)
         {
             string name = textBox_Name.Text;
-            string message = name + " -> " + textBox_Message.Text;
+            string message =  textBox_Message.Text;
 
             if (message != "" && message.Length <= 64)
             {
@@ -151,6 +151,7 @@ namespace client
             button_disconnect.Enabled = false;
             button_sendmessage.Enabled = false;
             textBox_Message.Enabled = false;
+            clientSocket.Disconnect(false);
             logBox.AppendText("Disconnected");
 
         }

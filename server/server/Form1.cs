@@ -106,7 +106,6 @@ namespace server
             {
                 try
                 {
-                    
                         Byte[] buffer = new Byte[64];
                         thisClient.Receive(buffer);
 
@@ -120,12 +119,10 @@ namespace server
                     else
                         textBox_logs.AppendText("Client: " + incomingMessage + "\n");
                         
-                        
-                    
                 }
                 catch
                 {
-                    if (!terminating)
+                    if (!terminating || !connected)
                     {
                         textBox_logs.AppendText("A client has disconnected\n");
                     }
@@ -133,7 +130,7 @@ namespace server
                     clientSockets.Remove(thisClient);
                     connected = false;
                 }
-            }
+            } 
         }
 
         private void button_listen_Click(object sender, EventArgs e)
