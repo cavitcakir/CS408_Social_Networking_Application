@@ -8,6 +8,7 @@ namespace client
 {
     public partial class Form1 : Form
     {
+        string name;
         bool terminating = false;
         bool connected = false;
         Socket clientSocket;
@@ -21,6 +22,7 @@ namespace client
 
         private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            send_message("DISCONNECTED");
             connected = false;
             terminating = true;
             Environment.Exit(0);
@@ -32,7 +34,8 @@ namespace client
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             string IP = textBox_IP.Text;
             int portNum;
-            string name = textBox_Name.Text, serverRespond = "";
+            name = textBox_Name.Text;
+            string serverRespond = "";
 
             if (name != "" && name.Length <= 64) // if name is not empty and longer than 64
             {
@@ -91,7 +94,7 @@ namespace client
 
         private void Receive()
         {
-            while (true && connected)
+            while (connected)
             {
                 try
                 {
@@ -128,13 +131,14 @@ namespace client
             if (message != "" && message.Length <= 64)
             {
                 send_message(message);
-                logBox.AppendText(message + "\n");
+                logBox.AppendText( name +": " + message + "\n");
             }
 
         }
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
+            send_message("DISCONNECTED");
             connected = false;
             button_connect.Enabled = true;
             button_disconnect.Enabled = false;

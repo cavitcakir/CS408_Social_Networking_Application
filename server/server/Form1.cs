@@ -17,10 +17,9 @@ namespace server
     public partial class Form1 : Form
     {
         Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        Dictionary<string, Socket> clientSocketsDictionary = new Dictionary<string, Socket>();
-        List<string> connectedNames = new List<string>();
-        List<string> registeredUsers = new List<string>();
-
+        Dictionary<string, Socket> clientSocketsDictionary = new Dictionary<string, Socket>(); // keeps (username->client) tuples
+        List<string> connectedNames = new List<string>(); // keeps names of connected users
+        List<string> registeredUsers = new List<string>(); // keeps names of registered users
 
         bool terminating = false;
         bool listening = false;
@@ -41,21 +40,21 @@ namespace server
         private void readFile()
         {
             string line;
-            var path = Path.Combine(Directory.GetCurrentDirectory() ,"user_db.txt");
+            var path = Path.Combine(Directory.GetCurrentDirectory() ,"user_db.txt"); // checks current directory to find user_db.txt
             System.IO.StreamReader file =new  System.IO.StreamReader(path);
             while((line = file.ReadLine()) != null)
             {
-                registeredUsers.Add(line);
+                registeredUsers.Add(line); // adds all the names to the registered users hashset
             }
             file.Close();
         }
-        private void send_message(Socket clientSocket,string message)
+        private void send_message(Socket clientSocket,string message) // takes socket and message then sends the message to that socket
         {
             Byte[] buffer = new Byte[64];
             buffer = Encoding.Default.GetBytes(message);
             clientSocket.Send(buffer);
         }
-        private string receiveOneMessage(Socket clientSocket) // this function receives only one message
+        private string receiveOneMessage(Socket clientSocket) // this function receives only one message and returns it
         {
             Byte[] buffer = new Byte[64];
             clientSocket.Receive(buffer);
@@ -70,10 +69,10 @@ namespace server
             {
                 try
                 {
-                    string name ="";
-                    Socket newClient = serverSocket.Accept();
-                    if (checkClient(newClient,ref name)){
-                        if (!clientSocketsDictionary.ContainsKey(name))
+                    string name =""; // we initialize name to empty string
+                    Socket newClient = serverSocket.Accept(); // first we accept the new connection request
+                    if (checkClient(newClient,ref name)){ // gets the name and check if name is registered
+                        if (!clientSocketsDictionary.ContainsKey(name)) // checks if the user already connected
                         {
                             send_message(newClient, "authorized\n");
                             clientSocketsDictionary.Add(name, newClient);
@@ -111,13 +110,13 @@ namespace server
             }
         }
 
-        private bool checkClient(Socket thisClient, ref string name)
+        private bool checkClient(Socket thisClient, ref string name) // gets the name of user and returns that users registiration status
         {
             try
             {
-                string incomingMessage = receiveOneMessage(thisClient);
+                string incomingMessage = receiveOneMessage(thisClient); // get the name
 
-                if (registeredUsers.Contains(incomingMessage))
+                if (registeredUsers.Contains(incomingMessage)) // check if name is registered
                 {
                     name = incomingMessage;
                     return true;
@@ -135,40 +134,37 @@ namespace server
         }
         private void Receive()
         {
-            string name = connectedNames[connectedNames.Count() - 1];
-            Socket thisClient = clientSocketsDictionary[name];
+            string name = connectedNames[connectedNames.Count() - 1]; // we got the username
+            Socket thisClient = clientSocketsDictionary[name]; // we got the socket that related to the username
             bool connected = true;
 
             while (connected && !terminating)
             {
                 try
                 {
-                    string incomingMessage = receiveOneMessage(thisClient);
-                    if (incomingMessage == "")
+                    string incomingMessage = receiveOneMessage(thisClient); // if there are any messages we take it
+                    if (incomingMessage == "DISCONNECTED") 
                     {
                         connected = false;
                         textBox_logs.AppendText(name + " has disconnected\n");
                     }
                     else
                     {
-                        textBox_logs.AppendText(name + ": " + incomingMessage + "\n");
+                        textBox_logs.AppendText(name + ": " + incomingMessage + "\n"); // append it to our log
                         foreach (string clientName in connectedNames)
                         {
-                            if (clientName != name)
+                            if (clientName != name) // check for to don't send it to sender client
                             {
-                                Socket tempSocket = clientSocketsDictionary[clientName];
+                                Socket tempSocket = clientSocketsDictionary[clientName]; // we got the socket
                                 send_message(tempSocket, (name + ": "));
-                                send_message(tempSocket, (incomingMessage + "\n"));
+                                send_message(tempSocket, (incomingMessage + "\n")); // send name and message
                             }
                         }
                     }
                 }
                 catch
                 {
-                    if (!terminating || !connected)
-                    {
-                        textBox_logs.AppendText(name +" has disconnected\n");
-                    }
+                    textBox_logs.AppendText(name +" has disconnected\n");
                     thisClient.Close();
                     connectedNames.Remove(name);
                     clientSocketsDictionary.Remove(name);
@@ -186,27 +182,34 @@ namespace server
         private void button_listen_Click(object sender, EventArgs e)
         {
             int serverPort;
-            readFile();
-            if (Int32.TryParse(textBox_port.Text, out serverPort))
+            readFile(); // reads the database
+            if (Int32.TryParse(textBox_port.Text, out serverPort)) // if we can parse the input port number
             {
-                try
+                if (serverPort <= 65535)
                 {
-                    IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, serverPort);
-                    serverSocket.Bind(endPoint);
-                    serverSocket.Listen(300);
+                    try
+                    {
+                        IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, serverPort);
+                        serverSocket.Bind(endPoint);
+                        serverSocket.Listen(300);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+
+                    listening = true;
+                    button_listen.Enabled = false;
+
+                    Thread acceptThread = new Thread(Accept);
+                    acceptThread.Start();
+
+                    textBox_logs.AppendText("Started listening on port: " + serverPort + "\n");
                 }
-                catch (Exception)
+                else
                 {
-                    throw;
+                    textBox_logs.AppendText("Port number should be less than 65535\n");
                 }
-               
-                listening = true;
-                button_listen.Enabled = false;
-
-                Thread acceptThread = new Thread(Accept);
-                acceptThread.Start();
-
-                textBox_logs.AppendText("Started listening on port: " + serverPort + "\n");
             }
             else
             {
