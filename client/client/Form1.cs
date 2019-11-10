@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -12,6 +13,7 @@ namespace client
         bool terminating = false;
         bool connected = false;
         Socket clientSocket;
+
 
         public Form1()
         {
@@ -52,7 +54,11 @@ namespace client
                             button_sendmessage.Enabled = true;
                             textBox_Message.Enabled = true;
                             connected = true;
+                            button_connect.Text = "Connected";
+                            button_connect.BackColor = System.Drawing.Color.Green;
+                            button_disconnect.BackColor = System.Drawing.Color.Red;
                             logBox.AppendText("Connection established...\n");
+                            logBox.ScrollToCaret();
 
                             Thread receiveThread = new Thread(Receive);
                             receiveThread.Start();
@@ -60,25 +66,30 @@ namespace client
                         else if (serverRespond == "not authorized")
                         {
                             logBox.AppendText("You are not registered.\n");
+                            logBox.ScrollToCaret();
                         }
                         else if (serverRespond == "already connected")
                         {
                             logBox.AppendText("You are already connected.\n");
+                            logBox.ScrollToCaret();
                         }
                     }
                     catch
                     {
                         logBox.AppendText("Could not connect to the server!\n");
+                        logBox.ScrollToCaret();
                     }
                 }
                 else
                 {
                     logBox.AppendText("Check the port\n");
+                    logBox.ScrollToCaret();
                 }
             }
             else
             {
                 logBox.AppendText("Check the name\n");
+                logBox.ScrollToCaret();
             }
         }
 
@@ -99,6 +110,7 @@ namespace client
                 {
                     string incomingMessage = receiveOneMessage();
                     logBox.AppendText(incomingMessage);
+                    logBox.ScrollToCaret();
                 }
                 catch
                 {
@@ -110,6 +122,7 @@ namespace client
                         textBox_Message.Enabled = false;
                         clientSocket.Disconnect(true);
                         logBox.AppendText("The server has disconnected\n");
+                        logBox.ScrollToCaret();
                     }
                     clientSocket.Close();
                     connected = false;
@@ -129,14 +142,19 @@ namespace client
             string message = textBox_Message.Text;
             if (message != "" && message.Length <= 64)
             {
+                textBox_Message.Text = "";
                 send_message(message);
                 logBox.AppendText( name +": " + message + "\n");
+                logBox.ScrollToCaret();
             }
 
         }
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
+            button_disconnect.BackColor = default(Color);
+            button_connect.BackColor = default(Color);
+            button_connect.Text = "Connect";
             send_message("DISCONNECTED");
             connected = false;
             button_connect.Enabled = true;
@@ -145,6 +163,7 @@ namespace client
             textBox_Message.Enabled = false;
             clientSocket.Disconnect(false);
             logBox.AppendText("Disconnected\n");
+            logBox.ScrollToCaret();
         }
     }
 }

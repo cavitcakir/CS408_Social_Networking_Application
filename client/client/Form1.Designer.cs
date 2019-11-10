@@ -83,7 +83,7 @@
             this.button_connect.Name = "button_connect";
             this.button_connect.Size = new System.Drawing.Size(133, 23);
             this.button_connect.TabIndex = 13;
-            this.button_connect.Text = "connect";
+            this.button_connect.Text = "Connect";
             this.button_connect.UseVisualStyleBackColor = true;
             this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
             // 
@@ -128,9 +128,9 @@
             // button_sendmessage
             // 
             this.button_sendmessage.Enabled = false;
-            this.button_sendmessage.Location = new System.Drawing.Point(461, 160);
+            this.button_sendmessage.Location = new System.Drawing.Point(461, 153);
             this.button_sendmessage.Name = "button_sendmessage";
-            this.button_sendmessage.Size = new System.Drawing.Size(112, 23);
+            this.button_sendmessage.Size = new System.Drawing.Size(112, 33);
             this.button_sendmessage.TabIndex = 20;
             this.button_sendmessage.Text = "Send Message";
             this.button_sendmessage.UseVisualStyleBackColor = true;
@@ -143,7 +143,7 @@
             this.button_disconnect.Name = "button_disconnect";
             this.button_disconnect.Size = new System.Drawing.Size(133, 23);
             this.button_disconnect.TabIndex = 21;
-            this.button_disconnect.Text = "disconnect";
+            this.button_disconnect.Text = "Disconnect";
             this.button_disconnect.UseVisualStyleBackColor = true;
             this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             // 

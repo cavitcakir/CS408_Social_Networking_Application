@@ -78,6 +78,7 @@ namespace server
                             clientSocketsDictionary.Add(name, newClient);
                             connectedNames.Add(name);
                             textBox_logs.AppendText(name + " is connected.\n");
+                            textBox_logs.ScrollToCaret();
                             foreach (string clientName in connectedNames)
                             {
                                 if (clientName != name) // check for to don't send it to sender client
@@ -93,12 +94,14 @@ namespace server
                         else
                         {
                             textBox_logs.AppendText(name + " is trying to connect again\n");
+                            textBox_logs.ScrollToCaret();
                             send_message(newClient, "already connected");
                             newClient.Close();
                         }
                     }
                     else{
                         textBox_logs.AppendText(name + " is trying to connect but not registered\n");
+                        textBox_logs.ScrollToCaret();
                         send_message(newClient, "not authorized");
                         newClient.Close();
                     }
@@ -112,6 +115,7 @@ namespace server
                     else
                     {
                         textBox_logs.AppendText("The socket stopped working.\n");
+                        textBox_logs.ScrollToCaret();
                     }
 
                 }
@@ -135,8 +139,10 @@ namespace server
                     return false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                textBox_logs.AppendText("Fail: " + ex.ToString() + "\n");
+                textBox_logs.ScrollToCaret();
                 throw;
             }
         }
@@ -155,10 +161,12 @@ namespace server
                     {
                         connected = false;
                         textBox_logs.AppendText(name + " has disconnected\n");
+                        textBox_logs.ScrollToCaret();
                     }
                     else
                     {
                         textBox_logs.AppendText(name + ": " + incomingMessage + "\n"); // append it to our log
+                        textBox_logs.ScrollToCaret();
                         foreach (string clientName in connectedNames)
                         {
                             if (clientName != name) // check for to don't send it to sender client
@@ -181,6 +189,7 @@ namespace server
                         }
                     }
                     textBox_logs.AppendText(name +" has disconnected\n");
+                    textBox_logs.ScrollToCaret();
                     thisClient.Close();
                     connectedNames.Remove(name);
                     clientSocketsDictionary.Remove(name);
@@ -217,27 +226,33 @@ namespace server
                         serverSocket.Bind(endPoint);
                         serverSocket.Listen(300);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        throw;
+                        textBox_logs.AppendText("Fail: " + ex.ToString() + "\n");
+                        textBox_logs.ScrollToCaret();
                     }
 
                     listening = true;
                     button_listen.Enabled = false;
+                    button_listen.Text = "Listening";
+                    button_listen.BackColor = Color.Green;
 
                     Thread acceptThread = new Thread(Accept);
                     acceptThread.Start();
 
                     textBox_logs.AppendText("Started listening on port: " + serverPort + "\n");
+                    textBox_logs.ScrollToCaret();
                 }
                 else
                 {
                     textBox_logs.AppendText("Port number should be less than 65535\n");
+                    textBox_logs.ScrollToCaret();
                 }
             }
             else
             {
                 textBox_logs.AppendText("Please check port number \n");
+                textBox_logs.ScrollToCaret();
             }
         }
     }

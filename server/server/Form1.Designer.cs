@@ -57,7 +57,7 @@
             this.button_listen.Location = new System.Drawing.Point(195, 4);
             this.button_listen.Margin = new System.Windows.Forms.Padding(2);
             this.button_listen.Name = "button_listen";
-            this.button_listen.Size = new System.Drawing.Size(56, 22);
+            this.button_listen.Size = new System.Drawing.Size(92, 22);
             this.button_listen.TabIndex = 4;
             this.button_listen.Text = "Listen";
             this.button_listen.UseVisualStyleBackColor = true;
