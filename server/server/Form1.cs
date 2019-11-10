@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace server
@@ -151,7 +148,7 @@ namespace server
             string name = connectedNames[connectedNames.Count() - 1]; // we got the username
             Socket thisClient = clientSocketsDictionary[name]; // we got the socket that related to the username
             bool connected = true;
-
+            bool flag = false;
             while (connected && !terminating)
             {
                 try
@@ -180,6 +177,7 @@ namespace server
                 }
                 catch
                 {
+                    flag = true;
                     foreach (string clientName in connectedNames)
                     {
                         if (clientName != name) // check for to don't send it to sender client
@@ -196,7 +194,7 @@ namespace server
                     connected = false;
                 }
             }
-            if (!connected)
+            if (!connected && !flag)
             {
                 foreach (string clientName in connectedNames)
                 {
