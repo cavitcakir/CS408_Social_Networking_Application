@@ -78,6 +78,14 @@ namespace server
                             clientSocketsDictionary.Add(name, newClient);
                             connectedNames.Add(name);
                             textBox_logs.AppendText(name + " is connected.\n");
+                            foreach (string clientName in connectedNames)
+                            {
+                                if (clientName != name) // check for to don't send it to sender client
+                                {
+                                    Socket tempSocket = clientSocketsDictionary[clientName]; // we got the socket
+                                    send_message(tempSocket, (name + " is connected\n"));
+                                }
+                            }
 
                             Thread receiveThread = new Thread(Receive);
                             receiveThread.Start();
@@ -164,6 +172,14 @@ namespace server
                 }
                 catch
                 {
+                    foreach (string clientName in connectedNames)
+                    {
+                        if (clientName != name) // check for to don't send it to sender client
+                        {
+                            Socket tempSocket = clientSocketsDictionary[clientName]; // we got the socket
+                            send_message(tempSocket, (name + " has disconnected\n"));
+                        }
+                    }
                     textBox_logs.AppendText(name +" has disconnected\n");
                     thisClient.Close();
                     connectedNames.Remove(name);
@@ -173,6 +189,14 @@ namespace server
             }
             if (!connected)
             {
+                foreach (string clientName in connectedNames)
+                {
+                    if (clientName != name) // check for to don't send it to sender client
+                    {
+                        Socket tempSocket = clientSocketsDictionary[clientName]; // we got the socket
+                        send_message(tempSocket, (name + " has disconnected\n"));
+                    }
+                }
                 thisClient.Close();
                 connectedNames.Remove(name);
                 clientSocketsDictionary.Remove(name);

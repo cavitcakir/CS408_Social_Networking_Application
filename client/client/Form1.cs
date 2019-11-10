@@ -22,7 +22,6 @@ namespace client
 
         private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            send_message("DISCONNECTED");
             connected = false;
             terminating = true;
             Environment.Exit(0);
