@@ -144,7 +144,7 @@ namespace client
             {
                 textBox_Message.Text = "";
                 send_message(message);
-                logBox.AppendText( name +": " + message + "\n");
+                logBox.AppendText( "Me: " + message + "\n");
                 logBox.ScrollToCaret();
             }
 
@@ -155,7 +155,7 @@ namespace client
             button_disconnect.BackColor = default(Color);
             button_connect.BackColor = default(Color);
             button_connect.Text = "Connect";
-            send_message("DISCONNECTED");
+            send_message("D-I-S-C-O-N-N-E-C-T-E-D-SEC-KEY");
             connected = false;
             button_connect.Enabled = true;
             button_disconnect.Enabled = false;

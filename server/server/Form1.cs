@@ -154,7 +154,7 @@ namespace server
                 try
                 {
                     string incomingMessage = receiveOneMessage(thisClient); // if there are any messages we take it
-                    if (incomingMessage == "DISCONNECTED") 
+                    if (incomingMessage == "D-I-S-C-O-N-N-E-C-T-E-D-SEC-KEY") 
                     {
                         connected = false;
                         textBox_logs.AppendText(name + " has disconnected\n");
