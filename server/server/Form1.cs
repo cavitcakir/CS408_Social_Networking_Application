@@ -216,7 +216,7 @@ namespace server
             readFile(); // reads the database
             if (Int32.TryParse(textBox_port.Text, out serverPort)) // if we can parse the input port number
             {
-                if (serverPort <= 65535)
+                if (serverPort <= 65535 && serverPort>=0)
                 {
                     try
                     {
@@ -243,7 +243,7 @@ namespace server
                 }
                 else
                 {
-                    textBox_logs.AppendText("Port number should be less than 65535\n");
+                    textBox_logs.AppendText("Port number should be between 0 and 65535\n");
                     textBox_logs.ScrollToCaret();
                 }
             }
