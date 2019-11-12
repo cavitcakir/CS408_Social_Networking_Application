@@ -50,6 +50,10 @@
             this.label7 = new System.Windows.Forms.Label();
             this.button_invite = new System.Windows.Forms.Button();
             this.button_reflesh = new System.Windows.Forms.Button();
+            this.button_send_friends = new System.Windows.Forms.Button();
+            this.textBox_delete = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.button_delete = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -89,7 +93,7 @@
             // 
             // button_connect
             // 
-            this.button_connect.Location = new System.Drawing.Point(59, 118);
+            this.button_connect.Location = new System.Drawing.Point(59, 123);
             this.button_connect.Name = "button_connect";
             this.button_connect.Size = new System.Drawing.Size(133, 23);
             this.button_connect.TabIndex = 13;
@@ -138,11 +142,11 @@
             // button_sendmessage
             // 
             this.button_sendmessage.Enabled = false;
-            this.button_sendmessage.Location = new System.Drawing.Point(461, 153);
+            this.button_sendmessage.Location = new System.Drawing.Point(461, 144);
             this.button_sendmessage.Name = "button_sendmessage";
-            this.button_sendmessage.Size = new System.Drawing.Size(112, 33);
+            this.button_sendmessage.Size = new System.Drawing.Size(99, 23);
             this.button_sendmessage.TabIndex = 20;
-            this.button_sendmessage.Text = "Send Message";
+            this.button_sendmessage.Text = "Send To All";
             this.button_sendmessage.UseVisualStyleBackColor = true;
             this.button_sendmessage.Click += new System.EventHandler(this.button_sendmessage_Click);
             // 
@@ -161,7 +165,7 @@
             // 
             this.friendListBox.Location = new System.Drawing.Point(598, 26);
             this.friendListBox.Name = "friendListBox";
-            this.friendListBox.Size = new System.Drawing.Size(141, 136);
+            this.friendListBox.Size = new System.Drawing.Size(141, 115);
             this.friendListBox.TabIndex = 22;
             this.friendListBox.Text = "";
             // 
@@ -197,7 +201,7 @@
             this.button_accept.Enabled = false;
             this.button_accept.Location = new System.Drawing.Point(767, 99);
             this.button_accept.Name = "button_accept";
-            this.button_accept.Size = new System.Drawing.Size(76, 29);
+            this.button_accept.Size = new System.Drawing.Size(65, 19);
             this.button_accept.TabIndex = 26;
             this.button_accept.Text = "Accept";
             this.button_accept.UseVisualStyleBackColor = false;
@@ -207,9 +211,9 @@
             // 
             this.button_reject.BackColor = System.Drawing.SystemColors.Control;
             this.button_reject.Enabled = false;
-            this.button_reject.Location = new System.Drawing.Point(849, 99);
+            this.button_reject.Location = new System.Drawing.Point(856, 99);
             this.button_reject.Name = "button_reject";
-            this.button_reject.Size = new System.Drawing.Size(70, 29);
+            this.button_reject.Size = new System.Drawing.Size(65, 19);
             this.button_reject.TabIndex = 27;
             this.button_reject.Text = "Reject";
             this.button_reject.UseVisualStyleBackColor = false;
@@ -217,7 +221,7 @@
             // 
             // textBox_invite
             // 
-            this.textBox_invite.Location = new System.Drawing.Point(767, 165);
+            this.textBox_invite.Location = new System.Drawing.Point(767, 139);
             this.textBox_invite.Name = "textBox_invite";
             this.textBox_invite.Size = new System.Drawing.Size(98, 20);
             this.textBox_invite.TabIndex = 28;
@@ -225,7 +229,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(764, 149);
+            this.label7.Location = new System.Drawing.Point(764, 123);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(68, 13);
             this.label7.TabIndex = 29;
@@ -234,9 +238,9 @@
             // button_invite
             // 
             this.button_invite.Enabled = false;
-            this.button_invite.Location = new System.Drawing.Point(871, 165);
+            this.button_invite.Location = new System.Drawing.Point(871, 139);
             this.button_invite.Name = "button_invite";
-            this.button_invite.Size = new System.Drawing.Size(48, 21);
+            this.button_invite.Size = new System.Drawing.Size(50, 21);
             this.button_invite.TabIndex = 30;
             this.button_invite.Text = "Invite!";
             this.button_invite.UseVisualStyleBackColor = true;
@@ -245,19 +249,61 @@
             // button_reflesh
             // 
             this.button_reflesh.Enabled = false;
-            this.button_reflesh.Location = new System.Drawing.Point(619, 165);
+            this.button_reflesh.Location = new System.Drawing.Point(598, 147);
             this.button_reflesh.Name = "button_reflesh";
-            this.button_reflesh.Size = new System.Drawing.Size(100, 25);
+            this.button_reflesh.Size = new System.Drawing.Size(141, 25);
             this.button_reflesh.TabIndex = 31;
             this.button_reflesh.Text = "Reflesh";
             this.button_reflesh.UseVisualStyleBackColor = true;
             this.button_reflesh.Click += new System.EventHandler(this.button_reflesh_Click);
+            // 
+            // button_send_friends
+            // 
+            this.button_send_friends.Enabled = false;
+            this.button_send_friends.Location = new System.Drawing.Point(461, 173);
+            this.button_send_friends.Name = "button_send_friends";
+            this.button_send_friends.Size = new System.Drawing.Size(99, 23);
+            this.button_send_friends.TabIndex = 32;
+            this.button_send_friends.Text = "Send To Friends";
+            this.button_send_friends.UseVisualStyleBackColor = true;
+            this.button_send_friends.Click += new System.EventHandler(this.button_send_friends_Click);
+            // 
+            // textBox_delete
+            // 
+            this.textBox_delete.Location = new System.Drawing.Point(767, 176);
+            this.textBox_delete.Name = "textBox_delete";
+            this.textBox_delete.Size = new System.Drawing.Size(98, 20);
+            this.textBox_delete.TabIndex = 33;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(764, 162);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(73, 13);
+            this.label8.TabIndex = 34;
+            this.label8.Text = "Delete Friend:";
+            // 
+            // button_delete
+            // 
+            this.button_delete.Enabled = false;
+            this.button_delete.Location = new System.Drawing.Point(871, 176);
+            this.button_delete.Name = "button_delete";
+            this.button_delete.Size = new System.Drawing.Size(50, 21);
+            this.button_delete.TabIndex = 35;
+            this.button_delete.Text = "Delete!";
+            this.button_delete.UseVisualStyleBackColor = true;
+            this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(931, 202);
+            this.Controls.Add(this.button_delete);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.textBox_delete);
+            this.Controls.Add(this.button_send_friends);
             this.Controls.Add(this.button_reflesh);
             this.Controls.Add(this.button_invite);
             this.Controls.Add(this.label7);
@@ -311,6 +357,10 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button_invite;
         private System.Windows.Forms.Button button_reflesh;
+        private System.Windows.Forms.Button button_send_friends;
+        private System.Windows.Forms.TextBox textBox_delete;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button_delete;
     }
 }
 

@@ -22,6 +22,7 @@ namespace server
         List<Tuple<string, string>> notification_sent = new List<Tuple<string, string>>(); // (inviter,invitee)
         List<Tuple<string, string>> notification_approve = new List<Tuple<string, string>>(); // (invitee,inviter)
         List<Tuple<string, string>> notification_rejected = new List<Tuple<string, string>>(); // (invitee,inviter)
+        List<Tuple<string, string>> notification_deleted = new List<Tuple<string, string>>(); // (deleter,deletee)
         List<Tuple<string, string>> friendDatabase = new List<Tuple<string, string>>(); // (inviter,invitee)
 
 
@@ -248,6 +249,23 @@ namespace server
                         }
                     }
                 }
+                if(notification_deleted.Count != 0)
+                {
+                    for (int i = 0; i < notification_deleted.Count; i++)
+                    {
+                        var newNotification = notification_deleted[i];
+                        string deleter = newNotification.Item1;
+                        string deletee = newNotification.Item2;
+                        if (clientSocketsDictionary.ContainsKey(deletee))
+                        {
+                            Socket deleteeSocket = clientSocketsDictionary[deletee];
+                            send_message(deleteeSocket, "D-E-L-D-SEC-KEY" + deleter);
+                            Thread.Sleep(500);
+                            send_message(deleteeSocket, deleter + " has deleted you\n");
+                            notification_deleted.Remove(newNotification);
+                        }
+                    }
+                }
             }
         }
         private void Receive()
@@ -267,7 +285,7 @@ namespace server
                         textBox_logs.AppendText(name + " has disconnected\n");
                         textBox_logs.ScrollToCaret();
                     }
-                    else if (incomingMessage == "R-E-F-L-E-S-H")
+                    else if (incomingMessage == "R-E-F-L-E-S-H-SEC-KEY")
                     {
                         foreach (var tuple in friendDatabase)
                         {
@@ -284,6 +302,76 @@ namespace server
                         }
                         textBox_logs.AppendText("Friendlist of " + name + " has refleshed\n");
                         textBox_logs.ScrollToCaret();
+                    }
+                    else if (incomingMessage.Contains("F-R-N-D-SEC-KEY"))
+                    {
+                        bool anyFriends = false;
+                        foreach (var tuple in friendDatabase)
+                        {
+                            if (tuple.Item1 == name)
+                            {
+                                anyFriends = true;
+                                send_message(clientSocketsDictionary[tuple.Item2], "Friend Message-" + name + ": " + incomingMessage.Substring(15)+"\n");
+                                Thread.Sleep(500);
+                            }
+                            else if (tuple.Item2 == name )
+                            {
+                                anyFriends = true;
+                                send_message(clientSocketsDictionary[tuple.Item1], "Friend Message-" + name + ": " + incomingMessage.Substring(15) + "\n");
+                                Thread.Sleep(500);
+                            }
+                        }
+                        if (anyFriends)
+                        {
+                            textBox_logs.AppendText(name + " has sent message to his friends, message: " + incomingMessage.Substring(15) + "\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        else
+                        {
+                            textBox_logs.AppendText(name + " has trying to send message to his friends but he do not have any friends, message: " + incomingMessage.Substring(15) + "\n");
+                            textBox_logs.ScrollToCaret();
+                            send_message(thisClient, "You do no have any friends\n");
+                        }
+                    }
+                    else if (incomingMessage.Contains("D-E-L-SEC-KEY"))
+                    {
+                        string deletee = incomingMessage.Substring(13);
+                        string deleter = name;
+                        if(deletee == deleter)
+                        {
+                            send_message(thisClient, "You cannot delete yourself :(\n");
+                            textBox_logs.AppendText(deletee + " is trying to delete himself :(\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        else if (!registeredUsers.Contains(deletee))
+                        {
+                            send_message(thisClient, "You cannot delete some who is not registered :(\n");
+                            textBox_logs.AppendText(deletee + " is trying to delete someone not registered :(\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        else if(friendDatabase.Contains(Tuple.Create(deleter, deletee)) || friendDatabase.Contains(Tuple.Create(deletee, deleter)))
+                        {
+                            send_message(thisClient, "You succesfully deleted "+ deletee +"\n");
+                            textBox_logs.AppendText(deleter + " has deleted " + deletee + " :(\n");
+                            textBox_logs.ScrollToCaret();
+                            if(friendDatabase.Contains(Tuple.Create(deleter, deletee)))
+                            {
+                                friendDatabase.Remove(Tuple.Create(deleter, deletee));
+                            }
+                            else
+                            {
+                                friendDatabase.Remove(Tuple.Create(deletee, deleter));
+                            }
+                            send_message(thisClient, "D-E-L-D-SEC-KEY" + deletee);
+                            notification_deleted.Add(Tuple.Create(deleter, deletee));
+                        }
+                        else
+                        {
+                            send_message(thisClient, "You are not friend with " + deletee +"\n");
+                            textBox_logs.AppendText(deleter + " trying to delete " + deletee + " but they are not friends\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        
                     }
                     else if (incomingMessage.Contains("I-N-V-SEC-KEY"))
                     {

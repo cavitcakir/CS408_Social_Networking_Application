@@ -54,6 +54,10 @@ namespace client
                             button_reject.BackColor = Color.DarkRed;
                             button_accept.Enabled = true;
                             button_reflesh.Enabled = true;
+                            button_delete.Enabled = true;
+                            button_invite.BackColor = Color.DarkOliveGreen;
+                            button_delete.BackColor = Color.IndianRed;
+                            button_send_friends.Enabled = true;
                             button_reject.Enabled = true;
                             button_invite.Enabled = true;
                             button_connect.Enabled = false;
@@ -135,6 +139,23 @@ namespace client
                     {
                         string newMes = incomingMessage.Substring(17) + "\n";
                     }
+                    else if (incomingMessage.Contains("D-E-L-D-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(15);
+                        List<string> friends = new List<string>();
+                        foreach (string item in friendListBox.Lines)
+                        {
+                            if(item != newMes)
+                            {
+                                friends.Add(item);
+                            }
+                        }
+                        friendListBox.Clear();
+                        foreach (string item in friends)
+                        {
+                            friendListBox.AppendText(item);
+                        }
+                    }
                     else
                     {
                         logBox.AppendText(incomingMessage);
@@ -150,7 +171,11 @@ namespace client
                         button_accept.BackColor = default(Color);
                         button_reject.BackColor = default(Color);
                         button_reject.Enabled = false;
+                        button_delete.Enabled = false;
+                        button_invite.BackColor = default(Color);
+                        button_delete.BackColor = default(Color);
                         button_invite.Enabled = false;
+                        button_send_friends.Enabled = false;
                         friendListBox.Clear();
                         button_reflesh.Enabled = false;
                         button_disconnect.BackColor = default(Color);
@@ -195,11 +220,15 @@ namespace client
             button_reflesh.Enabled = false;
             friendRequestsCheckedList.Items.Clear();
             friendListBox.Clear();
+            button_delete.Enabled = false;
+            button_delete.BackColor = default(Color);
+            button_send_friends.Enabled = false;
             button_accept.Enabled = false;
             button_accept.BackColor = default(Color);
             button_reject.BackColor = default(Color);
             button_reject.Enabled = false;
             button_invite.Enabled = false;
+            button_invite.BackColor = default(Color);
             button_disconnect.BackColor = default(Color);
             button_connect.BackColor = default(Color);
             button_connect.Text = "Connect";
@@ -267,8 +296,30 @@ namespace client
 
         private void button_reflesh_Click(object sender, EventArgs e)
         {
-            send_message("R-E-F-L-E-S-H");
+            send_message("R-E-F-L-E-S-H-SEC-KEY");
             friendListBox.Clear();
+        }
+
+        private void button_send_friends_Click(object sender, EventArgs e)
+        {
+            string message = textBox_Message.Text;
+            if (message != "" && message.Length <= 64)
+            {
+                textBox_Message.Text = "";
+                send_message("F-R-N-D-SEC-KEY" + message);
+                logBox.AppendText("To friends: " + message + "\n");
+                logBox.ScrollToCaret();
+            }
+        }
+
+        private void button_delete_Click(object sender, EventArgs e)
+        {
+            string delete_name = textBox_delete.Text;
+            if (delete_name != "" && delete_name.Length <= 64)
+            {
+                textBox_delete.Text = "";
+                send_message("D-E-L-SEC-KEY" + delete_name);
+            }
         }
     }
 }
