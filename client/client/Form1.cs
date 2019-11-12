@@ -39,7 +39,7 @@ namespace client
             name = textBox_Name.Text;
             string serverRespond = "";
 
-            if (name != "" && name.Length <= 64) // if name is not empty and longer than 64
+            if (name != "" && name.Length <= 10000000) // if name is not empty and longer than 10m
             {
                 if (Int32.TryParse(textBox_Port.Text, out portNum))
                 {
@@ -99,14 +99,15 @@ namespace client
             }
             else
             {
-                logBox.AppendText("Check the name\n");
+                textBox_Name.Text = "";
+                logBox.AppendText("Name length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
         }
 
         private string receiveOneMessage() // this function receives only one message
         {
-            Byte[] buffer = new Byte[64];
+            Byte[] buffer = new Byte[10000000];
             clientSocket.Receive(buffer);
             string incomingMessage = Encoding.Default.GetString(buffer);
             incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
@@ -197,7 +198,7 @@ namespace client
 
         private void send_message(string message)
         {
-            Byte[] buffer = new Byte[64];
+            Byte[] buffer = new Byte[10000000];
             buffer = Encoding.Default.GetBytes(message);
             clientSocket.Send(buffer);
         }
@@ -205,11 +206,17 @@ namespace client
         private void button_sendmessage_Click(object sender, EventArgs e)
         {
             string message = textBox_Message.Text;
-            if (message != "" && message.Length <= 64)
+            if (message != "" && message.Length <= 10000000)
             {
                 textBox_Message.Text = "";
                 send_message(message);
                 logBox.AppendText( "Me: " + message + "\n");
+                logBox.ScrollToCaret();
+            }
+            else
+            {
+                textBox_Message.Text = "";
+                logBox.AppendText("Message length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
 
@@ -246,13 +253,19 @@ namespace client
         private void button_invite_Click(object sender, EventArgs e)
         {
             string message = textBox_invite.Text;
-            if (message != "" && message.Length <= 64)
+            if (message != "" && message.Length <= 10000000)
             {
                 logBox.AppendText("Friend request sent to " + message + "\n");
                 logBox.ScrollToCaret();
                 message = "I-N-V-SEC-KEY" + message;
                 textBox_invite.Text = "";
                 send_message(message);
+            }
+            else
+            {
+                textBox_invite.Text = "";
+                logBox.AppendText("Message length must between 1 and 10m\n");
+                logBox.ScrollToCaret();
             }
         }
 
@@ -303,11 +316,17 @@ namespace client
         private void button_send_friends_Click(object sender, EventArgs e)
         {
             string message = textBox_Message.Text;
-            if (message != "" && message.Length <= 64)
+            if (message != "" && message.Length <= 10000000)
             {
                 textBox_Message.Text = "";
                 send_message("F-R-N-D-SEC-KEY" + message);
                 logBox.AppendText("To friends: " + message + "\n");
+                logBox.ScrollToCaret();
+            }
+            else
+            {
+                textBox_Message.Text = "";
+                logBox.AppendText("Message length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
         }
@@ -315,10 +334,16 @@ namespace client
         private void button_delete_Click(object sender, EventArgs e)
         {
             string delete_name = textBox_delete.Text;
-            if (delete_name != "" && delete_name.Length <= 64)
+            if (delete_name != "" && delete_name.Length <= 10000000)
             {
                 textBox_delete.Text = "";
                 send_message("D-E-L-SEC-KEY" + delete_name);
+            }
+            else
+            {
+                textBox_delete.Text = "";
+                logBox.AppendText("Name length must between 1 and 10m\n");
+                logBox.ScrollToCaret();
             }
         }
     }

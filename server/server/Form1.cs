@@ -23,6 +23,8 @@ namespace server
         List<Tuple<string, string>> notification_approve = new List<Tuple<string, string>>(); // (invitee,inviter)
         List<Tuple<string, string>> notification_rejected = new List<Tuple<string, string>>(); // (invitee,inviter)
         List<Tuple<string, string>> notification_deleted = new List<Tuple<string, string>>(); // (deleter,deletee)
+        List<Tuple<string, string>> notification_message = new List<Tuple<string, string>>(); // (sender,sendee
+        List<string> pending_messages = new List<string>(); // 
         List<Tuple<string, string>> friendDatabase = new List<Tuple<string, string>>(); // (inviter,invitee)
 
 
@@ -57,13 +59,13 @@ namespace server
         }
         private void send_message(Socket clientSocket,string message) // takes socket and message then sends the message to that socket
         {
-            Byte[] buffer = new Byte[64];
+            Byte[] buffer = new Byte[10000000];
             buffer = Encoding.Default.GetBytes(message);
             clientSocket.Send(buffer);
         }
         private string receiveOneMessage(Socket clientSocket) // this function receives only one message and returns it
         {
-            Byte[] buffer = new Byte[64];
+            Byte[] buffer = new Byte[10000000];
             clientSocket.Receive(buffer);
             string incomingMessage = Encoding.Default.GetString(buffer);
             incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
@@ -266,6 +268,24 @@ namespace server
                         }
                     }
                 }
+                if (notification_message.Count != 0)
+                {
+                    for (int i = 0; i < notification_message.Count; i++)
+                    {
+                        var newNotification = notification_message[i];
+                        string sender = newNotification.Item1;
+                        string sendee = newNotification.Item2;
+                        if (clientSocketsDictionary.ContainsKey(sendee))
+                        {
+                            Socket sendeeSocket = clientSocketsDictionary[sendee];
+                            string message = pending_messages[i];
+                            send_message(sendeeSocket, message);
+                            notification_message.Remove(newNotification);
+                            pending_messages.Remove(message);
+                            Thread.Sleep(500);
+                        }
+                    }
+                }
             }
         }
         private void Receive()
@@ -311,13 +331,15 @@ namespace server
                             if (tuple.Item1 == name)
                             {
                                 anyFriends = true;
-                                send_message(clientSocketsDictionary[tuple.Item2], "Friend Message-" + name + ": " + incomingMessage.Substring(15)+"\n");
+                                notification_message.Add(Tuple.Create(name, tuple.Item2));
+                                pending_messages.Add("FM-" + name + ": " + incomingMessage.Substring(15) + "\n");
                                 Thread.Sleep(500);
                             }
-                            else if (tuple.Item2 == name )
+                            else if (tuple.Item2 == name)
                             {
                                 anyFriends = true;
-                                send_message(clientSocketsDictionary[tuple.Item1], "Friend Message-" + name + ": " + incomingMessage.Substring(15) + "\n");
+                                notification_message.Add(Tuple.Create(name, tuple.Item1));
+                                pending_messages.Add("FM-" + name + ": " + incomingMessage.Substring(15) + "\n");
                                 Thread.Sleep(500);
                             }
                         }
