@@ -40,6 +40,15 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button_sendmessage = new System.Windows.Forms.Button();
             this.button_disconnect = new System.Windows.Forms.Button();
+            this.friendListBox = new System.Windows.Forms.RichTextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.friendRequestsCheckedList = new System.Windows.Forms.CheckedListBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.button_accept = new System.Windows.Forms.Button();
+            this.button_reject = new System.Windows.Forms.Button();
+            this.textBox_invite = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.button_invite = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -139,7 +148,7 @@
             // button_disconnect
             // 
             this.button_disconnect.Enabled = false;
-            this.button_disconnect.Location = new System.Drawing.Point(59, 157);
+            this.button_disconnect.Location = new System.Drawing.Point(59, 158);
             this.button_disconnect.Name = "button_disconnect";
             this.button_disconnect.Size = new System.Drawing.Size(133, 23);
             this.button_disconnect.TabIndex = 21;
@@ -147,11 +156,105 @@
             this.button_disconnect.UseVisualStyleBackColor = true;
             this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             // 
+            // friendListBox
+            // 
+            this.friendListBox.Location = new System.Drawing.Point(598, 26);
+            this.friendListBox.Name = "friendListBox";
+            this.friendListBox.Size = new System.Drawing.Size(141, 160);
+            this.friendListBox.TabIndex = 22;
+            this.friendListBox.Text = "";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(595, 9);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(58, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "Friend List:";
+            // 
+            // friendRequestsCheckedList
+            // 
+            this.friendRequestsCheckedList.FormattingEnabled = true;
+            this.friendRequestsCheckedList.Location = new System.Drawing.Point(767, 29);
+            this.friendRequestsCheckedList.Name = "friendRequestsCheckedList";
+            this.friendRequestsCheckedList.Size = new System.Drawing.Size(152, 64);
+            this.friendRequestsCheckedList.TabIndex = 24;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(764, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(87, 13);
+            this.label6.TabIndex = 25;
+            this.label6.Text = "Friend Requests:";
+            // 
+            // button_accept
+            // 
+            this.button_accept.BackColor = System.Drawing.Color.ForestGreen;
+            this.button_accept.Enabled = false;
+            this.button_accept.Location = new System.Drawing.Point(767, 99);
+            this.button_accept.Name = "button_accept";
+            this.button_accept.Size = new System.Drawing.Size(76, 29);
+            this.button_accept.TabIndex = 26;
+            this.button_accept.Text = "Accept";
+            this.button_accept.UseVisualStyleBackColor = false;
+            this.button_accept.Click += new System.EventHandler(this.button_accept_Click);
+            // 
+            // button_reject
+            // 
+            this.button_reject.BackColor = System.Drawing.Color.Firebrick;
+            this.button_reject.Enabled = false;
+            this.button_reject.Location = new System.Drawing.Point(849, 99);
+            this.button_reject.Name = "button_reject";
+            this.button_reject.Size = new System.Drawing.Size(70, 29);
+            this.button_reject.TabIndex = 27;
+            this.button_reject.Text = "Reject";
+            this.button_reject.UseVisualStyleBackColor = false;
+            this.button_reject.Click += new System.EventHandler(this.button_reject_Click);
+            // 
+            // textBox_invite
+            // 
+            this.textBox_invite.Location = new System.Drawing.Point(767, 165);
+            this.textBox_invite.Name = "textBox_invite";
+            this.textBox_invite.Size = new System.Drawing.Size(98, 20);
+            this.textBox_invite.TabIndex = 28;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(764, 149);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(68, 13);
+            this.label7.TabIndex = 29;
+            this.label7.Text = "Invite Friend:";
+            // 
+            // button_invite
+            // 
+            this.button_invite.Enabled = false;
+            this.button_invite.Location = new System.Drawing.Point(871, 165);
+            this.button_invite.Name = "button_invite";
+            this.button_invite.Size = new System.Drawing.Size(48, 21);
+            this.button_invite.TabIndex = 30;
+            this.button_invite.Text = "Invite!";
+            this.button_invite.UseVisualStyleBackColor = true;
+            this.button_invite.Click += new System.EventHandler(this.button_invite_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 226);
+            this.ClientSize = new System.Drawing.Size(931, 202);
+            this.Controls.Add(this.button_invite);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.textBox_invite);
+            this.Controls.Add(this.button_reject);
+            this.Controls.Add(this.button_accept);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.friendRequestsCheckedList);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.friendListBox);
             this.Controls.Add(this.button_disconnect);
             this.Controls.Add(this.button_sendmessage);
             this.Controls.Add(this.label4);
@@ -185,6 +288,15 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button_sendmessage;
         private System.Windows.Forms.Button button_disconnect;
+        private System.Windows.Forms.RichTextBox friendListBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckedListBox friendRequestsCheckedList;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button_accept;
+        private System.Windows.Forms.Button button_reject;
+        private System.Windows.Forms.TextBox textBox_invite;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button_invite;
     }
 }
 

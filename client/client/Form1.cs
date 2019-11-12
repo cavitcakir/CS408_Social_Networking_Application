@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Sockets;
 using System.Text;
@@ -49,6 +50,9 @@ namespace client
                         serverRespond = receiveOneMessage(); // we got our respond
                         if (serverRespond != "already connected" && serverRespond != "not authorized")
                         {
+                            button_accept.Enabled = true;
+                            button_reject.Enabled = true;
+                            button_invite.Enabled = true;
                             button_connect.Enabled = false;
                             button_disconnect.Enabled = true;
                             button_sendmessage.Enabled = true;
@@ -109,8 +113,26 @@ namespace client
                 try
                 {
                     string incomingMessage = receiveOneMessage();
-                    logBox.AppendText(incomingMessage);
-                    logBox.ScrollToCaret();
+                    if (incomingMessage.Contains("R-Q-S-T-D-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(17);
+                        friendRequestsCheckedList.Items.Add(newMes);
+                    }
+                    else if (incomingMessage.Contains("A-C-P-T-D-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(17) + "\n";
+                        friendListBox.AppendText(newMes);
+                    }
+                    else if (incomingMessage.Contains("R-J-C-T-D-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(17) + "\n";
+                        friendListBox.AppendText(newMes);
+                    }
+                    else
+                    {
+                        logBox.AppendText(incomingMessage);
+                        logBox.ScrollToCaret();
+                    }
                 }
                 catch
                 {
@@ -152,6 +174,9 @@ namespace client
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
+            button_accept.Enabled = false;
+            button_reject.Enabled = false;
+            button_invite.Enabled = false;
             button_disconnect.BackColor = default(Color);
             button_connect.BackColor = default(Color);
             button_connect.Text = "Connect";
@@ -164,6 +189,56 @@ namespace client
             clientSocket.Disconnect(false);
             logBox.AppendText("Disconnected\n");
             logBox.ScrollToCaret();
+        }
+
+        private void button_invite_Click(object sender, EventArgs e)
+        {
+            string message = textBox_invite.Text;
+            if (message != "" && message.Length <= 64)
+            {
+                logBox.AppendText("Friend request sent to " + message + "\n");
+                message = "I-N-V-SEC-KEY" + message;
+                textBox_invite.Text = "";
+                send_message(message);
+            }
+        }
+
+        List<string> getCheckedItems()
+        {
+            List<string> friendRequests = new List<string>();
+            for (int i = 0; i < friendRequestsCheckedList.Items.Count; i++)
+            {
+                if (friendRequestsCheckedList.GetItemChecked(i))
+                {
+                    friendRequests.Add(friendRequestsCheckedList.Items[i].ToString());
+                    friendRequestsCheckedList.Items.Remove(friendRequestsCheckedList.Items[i]);
+                }
+            }
+            return friendRequests;
+        }
+
+        private void button_accept_Click(object sender, EventArgs e)
+        {
+            List<string> selectedNames = getCheckedItems(); 
+            foreach (string name in selectedNames)
+            {
+                logBox.AppendText("Accepted friend request of " + name + "\n");
+                string message = "A-C-P-T-SEC-KEY" + name;
+                textBox_invite.Text = "";
+                send_message(message);
+            }
+        }
+
+        private void button_reject_Click(object sender, EventArgs e)
+        {
+            List<string> selectedNames = getCheckedItems();
+            foreach (string name in selectedNames)
+            {
+                logBox.AppendText("Rejected friend request of " + name + "\n");
+                string message = "R-J-C-T-SEC-KEY" + name;
+                textBox_invite.Text = "";
+                send_message(message);
+            }
         }
     }
 }
