@@ -50,7 +50,10 @@ namespace client
                         serverRespond = receiveOneMessage(); // we got our respond
                         if (serverRespond != "already connected" && serverRespond != "not authorized")
                         {
+                            button_accept.BackColor = Color.ForestGreen;
+                            button_reject.BackColor = Color.DarkRed;
                             button_accept.Enabled = true;
+                            button_reflesh.Enabled = true;
                             button_reject.Enabled = true;
                             button_invite.Enabled = true;
                             button_connect.Enabled = false;
@@ -118,6 +121,11 @@ namespace client
                         string newMes = incomingMessage.Substring(17);
                         friendRequestsCheckedList.Items.Add(newMes);
                     }
+                    else if (incomingMessage.Contains("A-D-D-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(13) + "\n";
+                        friendListBox.AppendText(newMes);
+                    }
                     else if (incomingMessage.Contains("A-C-P-T-D-SEC-KEY"))
                     {
                         string newMes = incomingMessage.Substring(17) + "\n";
@@ -126,7 +134,6 @@ namespace client
                     else if (incomingMessage.Contains("R-J-C-T-D-SEC-KEY"))
                     {
                         string newMes = incomingMessage.Substring(17) + "\n";
-                        friendListBox.AppendText(newMes);
                     }
                     else
                     {
@@ -138,6 +145,17 @@ namespace client
                 {
                     if (!terminating)
                     {
+                        friendRequestsCheckedList.Items.Clear();
+                        button_accept.Enabled = false;
+                        button_accept.BackColor = default(Color);
+                        button_reject.BackColor = default(Color);
+                        button_reject.Enabled = false;
+                        button_invite.Enabled = false;
+                        friendListBox.Clear();
+                        button_reflesh.Enabled = false;
+                        button_disconnect.BackColor = default(Color);
+                        button_connect.BackColor = default(Color);
+                        button_connect.Text = "Connect";
                         button_connect.Enabled = true;
                         button_disconnect.Enabled = false;
                         button_sendmessage.Enabled = false;
@@ -174,7 +192,12 @@ namespace client
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
+            button_reflesh.Enabled = false;
+            friendRequestsCheckedList.Items.Clear();
+            friendListBox.Clear();
             button_accept.Enabled = false;
+            button_accept.BackColor = default(Color);
+            button_reject.BackColor = default(Color);
             button_reject.Enabled = false;
             button_invite.Enabled = false;
             button_disconnect.BackColor = default(Color);
@@ -197,6 +220,7 @@ namespace client
             if (message != "" && message.Length <= 64)
             {
                 logBox.AppendText("Friend request sent to " + message + "\n");
+                logBox.ScrollToCaret();
                 message = "I-N-V-SEC-KEY" + message;
                 textBox_invite.Text = "";
                 send_message(message);
@@ -223,8 +247,8 @@ namespace client
             foreach (string name in selectedNames)
             {
                 logBox.AppendText("Accepted friend request of " + name + "\n");
+                logBox.ScrollToCaret();
                 string message = "A-C-P-T-SEC-KEY" + name;
-                textBox_invite.Text = "";
                 send_message(message);
             }
         }
@@ -235,10 +259,16 @@ namespace client
             foreach (string name in selectedNames)
             {
                 logBox.AppendText("Rejected friend request of " + name + "\n");
+                logBox.ScrollToCaret();
                 string message = "R-J-C-T-SEC-KEY" + name;
-                textBox_invite.Text = "";
                 send_message(message);
             }
+        }
+
+        private void button_reflesh_Click(object sender, EventArgs e)
+        {
+            send_message("R-E-F-L-E-S-H");
+            friendListBox.Clear();
         }
     }
 }

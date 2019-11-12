@@ -27,6 +27,8 @@ namespace server
 
         bool terminating = false;
         bool listening = false;
+        int initializeFriends = 0;
+
 
         public Form1()
         {
@@ -66,7 +68,37 @@ namespace server
             incomingMessage = incomingMessage.Substring(0, incomingMessage.IndexOf("\0"));
             return incomingMessage;
         }
-
+        private void initializeFriendship(string name)
+        {
+            Socket userSocket = clientSocketsDictionary[name];
+            foreach (var tuple in friendDatabase)
+            {
+                if(tuple.Item1 == name && !notification_approve.Contains(Tuple.Create(tuple.Item2,name)))
+                {
+                    send_message(userSocket, "A-D-D-SEC-KEY" + tuple.Item2);
+                    Thread.Sleep(500);
+                }
+                else if(tuple.Item2 == name && !notification_approve.Contains(Tuple.Create(name,tuple.Item2)))
+                {
+                    send_message(userSocket, "A-D-D-SEC-KEY" + tuple.Item1);
+                    Thread.Sleep(500);
+                }
+            }
+            foreach (var tuple in friendRequests)
+            {
+                if (tuple.Item2 == name && initializeFriends == 0)
+                {
+                    if(!notification_sent.Contains(Tuple.Create(tuple.Item1, name)))
+                    {
+                        notification_sent.Add(Tuple.Create(tuple.Item1, name));
+                    }
+                    send_message(userSocket, "R-Q-S-T-D-SEC-KEY" + tuple.Item1);
+                    Thread.Sleep(500);
+                    //send_message(userSocket, "\n" + tuple.Item1 + " has sent invite\n");
+                }
+            }
+            initializeFriends = 1;
+        }
         private void Accept()
         {
             while (listening)
@@ -83,6 +115,8 @@ namespace server
                             connectedNames.Add(name);
                             textBox_logs.AppendText(name + " is connected.\n");
                             textBox_logs.ScrollToCaret();
+                            initializeFriends = 0;
+                            initializeFriendship(name);
                             foreach (string clientName in connectedNames)
                             {
                                 if (clientName != name) // check for to don't send it to sender client
@@ -91,7 +125,6 @@ namespace server
                                     send_message(tempSocket, (name + " is connected\n"));
                                 }
                             }
-
                             Thread receiveThread = new Thread(Receive);
                             receiveThread.Start();
                         }
@@ -160,6 +193,8 @@ namespace server
                 //List<Tuple<string, string>> notification_rejected = new List<Tuple<string, string>>(); // (invitee,inviter)
                 //Socket inviteeSocket = clientSocketsDictionary[invitee];
                 //Socket inviterSocket = clientSocketsDictionary[inviter];
+
+                Thread.Sleep(500);
                 if (friendRequests.Count != 0)
                 {
                     for (int i = 0; i < friendRequests.Count; i++)
@@ -167,12 +202,12 @@ namespace server
                         var newInvite = friendRequests[i];
                         string inviter = newInvite.Item1;
                         string invitee = newInvite.Item2;
-                        if (clientSocketsDictionary.ContainsKey(invitee) && !notification_sent.Contains(newInvite))
+                        if (clientSocketsDictionary.ContainsKey(invitee) && !notification_sent.Contains(newInvite) && initializeFriends == 1)
                         {
-                            textBox_logs.AppendText(inviter + invitee + "\n");
-                            Thread.Sleep(5000);
                             Socket inviteeSocket = clientSocketsDictionary[invitee];
                             send_message(inviteeSocket, "R-Q-S-T-D-SEC-KEY" + inviter);
+                            Thread.Sleep(500);
+                            send_message(inviteeSocket, inviter + " has sent invite\n");
                             notification_sent.Add(Tuple.Create(inviter,invitee));
                         }
                     }
@@ -186,12 +221,12 @@ namespace server
                         string invitee = newNotification.Item1;
                         if (clientSocketsDictionary.ContainsKey(inviter))
                         {
-                            Thread.Sleep(1000);
                             Socket inviterSocket = clientSocketsDictionary[inviter];
                             send_message(inviterSocket, "A-C-P-T-D-SEC-KEY" + invitee);
+                            Thread.Sleep(500);
+                            send_message(inviterSocket,invitee + " has accepted your invite\n");
                             notification_approve.Remove(newNotification);
-                            //notification_sent.Remove(Tuple.Create(inviter, invitee));
-                            friendRequests.Remove(Tuple.Create(inviter, invitee));
+                            notification_sent.Remove(Tuple.Create(inviter, invitee));
                         }
                     }
                 }
@@ -199,17 +234,17 @@ namespace server
                 {
                     for (int i = 0; i < notification_rejected.Count; i++)
                     {
-                        var newNotification = notification_approve[i];
+                        var newNotification = notification_rejected[i];
                         string inviter = newNotification.Item2;
                         string invitee = newNotification.Item1;
                         if (clientSocketsDictionary.ContainsKey(inviter))
                         {
-                            Thread.Sleep(1000);
                             Socket inviterSocket = clientSocketsDictionary[inviter];
                             send_message(inviterSocket, "R-J-C-T-D-SEC-KEY" + invitee);
+                            Thread.Sleep(500);
+                            send_message(inviterSocket,invitee + " has rejected your invite\n");
                             notification_rejected.Remove(newNotification);
-                            //notification_sent.Remove(Tuple.Create(inviter, invitee));
-                            friendRequests.Remove(Tuple.Create(inviter, invitee));
+                            notification_sent.Remove(Tuple.Create(inviter, invitee));
                         }
                     }
                 }
@@ -232,6 +267,24 @@ namespace server
                         textBox_logs.AppendText(name + " has disconnected\n");
                         textBox_logs.ScrollToCaret();
                     }
+                    else if (incomingMessage == "R-E-F-L-E-S-H")
+                    {
+                        foreach (var tuple in friendDatabase)
+                        {
+                            if (tuple.Item1 == name && !notification_approve.Contains(Tuple.Create(tuple.Item2, name)))
+                            {
+                                send_message(thisClient, "A-D-D-SEC-KEY" + tuple.Item2);
+                                Thread.Sleep(500);
+                            }
+                            else if (tuple.Item2 == name && !notification_approve.Contains(Tuple.Create(name, tuple.Item2)))
+                            {
+                                send_message(thisClient, "A-D-D-SEC-KEY" + tuple.Item1);
+                                Thread.Sleep(500);
+                            }
+                        }
+                        textBox_logs.AppendText("Friendlist of " + name + " has refleshed\n");
+                        textBox_logs.ScrollToCaret();
+                    }
                     else if (incomingMessage.Contains("I-N-V-SEC-KEY"))
                     {
                         string invitee = incomingMessage.Substring(13);
@@ -244,7 +297,19 @@ namespace server
                         }
                         else if (friendDatabase.Contains(Tuple.Create(inviter, invitee)) || friendDatabase.Contains(Tuple.Create(invitee, inviter)))
                         {
-                            send_message(thisClient, "You are already friends with " + inviter+ "\n");
+                            send_message(thisClient, "You are already friends with " + invitee+ "\n");
+                            textBox_logs.AppendText(name + " trying to add existing friend " + invitee + "\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        else if (!registeredUsers.Contains(invitee))
+                        {
+                            send_message(thisClient, "Please check username " +invitee+ " is not valid\n");
+                            textBox_logs.AppendText(name + " trying to add existing friend " + invitee + "\n");
+                            textBox_logs.ScrollToCaret();
+                        }
+                        else if (friendRequests.Contains(Tuple.Create(inviter, invitee)) || friendRequests.Contains(Tuple.Create(invitee, inviter)))
+                        {
+                            send_message(thisClient,"You have pending invitation between " + invitee + "\n");
                             textBox_logs.AppendText(name + " trying to add existing friend " + invitee + "\n");
                             textBox_logs.ScrollToCaret();
                         }
@@ -261,6 +326,10 @@ namespace server
                         string invitee = name;
                         notification_approve.Add(Tuple.Create(invitee, inviter));
                         friendDatabase.Add(Tuple.Create(inviter, invitee));
+                        Socket inviteeSocket = clientSocketsDictionary[invitee];
+                        send_message(inviteeSocket, "A-D-D-SEC-KEY" + inviter);
+                        Thread.Sleep(500);
+                        friendRequests.Remove(Tuple.Create(inviter, invitee));
                         textBox_logs.AppendText(name + " accepted friend request of " + inviter + "\n");
                         textBox_logs.ScrollToCaret();
                     }
@@ -269,6 +338,7 @@ namespace server
                         string inviter = incomingMessage.Substring(15);
                         string invitee = name;
                         notification_rejected.Add(Tuple.Create(invitee, inviter));
+                        friendRequests.Remove(Tuple.Create(inviter, invitee));
                         textBox_logs.AppendText(name + " rejected friend request of " + inviter + "\n");
                         textBox_logs.ScrollToCaret();
                     }

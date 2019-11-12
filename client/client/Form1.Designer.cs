@@ -49,6 +49,7 @@
             this.textBox_invite = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.button_invite = new System.Windows.Forms.Button();
+            this.button_reflesh = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -160,7 +161,7 @@
             // 
             this.friendListBox.Location = new System.Drawing.Point(598, 26);
             this.friendListBox.Name = "friendListBox";
-            this.friendListBox.Size = new System.Drawing.Size(141, 160);
+            this.friendListBox.Size = new System.Drawing.Size(141, 136);
             this.friendListBox.TabIndex = 22;
             this.friendListBox.Text = "";
             // 
@@ -192,7 +193,7 @@
             // 
             // button_accept
             // 
-            this.button_accept.BackColor = System.Drawing.Color.ForestGreen;
+            this.button_accept.BackColor = System.Drawing.SystemColors.Control;
             this.button_accept.Enabled = false;
             this.button_accept.Location = new System.Drawing.Point(767, 99);
             this.button_accept.Name = "button_accept";
@@ -204,7 +205,7 @@
             // 
             // button_reject
             // 
-            this.button_reject.BackColor = System.Drawing.Color.Firebrick;
+            this.button_reject.BackColor = System.Drawing.SystemColors.Control;
             this.button_reject.Enabled = false;
             this.button_reject.Location = new System.Drawing.Point(849, 99);
             this.button_reject.Name = "button_reject";
@@ -241,11 +242,23 @@
             this.button_invite.UseVisualStyleBackColor = true;
             this.button_invite.Click += new System.EventHandler(this.button_invite_Click);
             // 
+            // button_reflesh
+            // 
+            this.button_reflesh.Enabled = false;
+            this.button_reflesh.Location = new System.Drawing.Point(619, 165);
+            this.button_reflesh.Name = "button_reflesh";
+            this.button_reflesh.Size = new System.Drawing.Size(100, 25);
+            this.button_reflesh.TabIndex = 31;
+            this.button_reflesh.Text = "Reflesh";
+            this.button_reflesh.UseVisualStyleBackColor = true;
+            this.button_reflesh.Click += new System.EventHandler(this.button_reflesh_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(931, 202);
+            this.Controls.Add(this.button_reflesh);
             this.Controls.Add(this.button_invite);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_invite);
@@ -297,6 +310,7 @@
         private System.Windows.Forms.TextBox textBox_invite;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button_invite;
+        private System.Windows.Forms.Button button_reflesh;
     }
 }
 
