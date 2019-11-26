@@ -414,13 +414,13 @@ namespace server
                         else if (!registeredUsers.Contains(invitee))
                         {
                             send_message(thisClient, "Please check username " +invitee+ " is not valid\n");
-                            textBox_logs.AppendText(name + " trying to add existing friend " + invitee + "\n");
+                            textBox_logs.AppendText(name + " trying to add not registered user " + invitee + "\n");
                             textBox_logs.ScrollToCaret();
                         }
                         else if (friendRequests.Contains(Tuple.Create(inviter, invitee)) || friendRequests.Contains(Tuple.Create(invitee, inviter)))
                         {
                             send_message(thisClient,"You have pending invitation between " + invitee + "\n");
-                            textBox_logs.AppendText(name + " trying to add existing friend " + invitee + "\n");
+                            textBox_logs.AppendText(name + " trying to send invite again to " + invitee + "\n");
                             textBox_logs.ScrollToCaret();
                         }
                         else
