@@ -320,7 +320,7 @@ namespace server
                                 Thread.Sleep(500);
                             }
                         }
-                        textBox_logs.AppendText("Friendlist of " + name + " has refleshed\n");
+                        textBox_logs.AppendText("Friendlist of " + name + " has refreshed\n");
                         textBox_logs.ScrollToCaret();
                     }
                     else if (incomingMessage.Contains("F-R-N-D-SEC-KEY"))
@@ -350,9 +350,9 @@ namespace server
                         }
                         else
                         {
-                            textBox_logs.AppendText(name + " has trying to send message to his friends but he do not have any friends, message: " + incomingMessage.Substring(15) + "\n");
+                            textBox_logs.AppendText(name + " has trying to send message to his friends but he/she does not have any friends, message: " + incomingMessage.Substring(15) + "\n");
                             textBox_logs.ScrollToCaret();
-                            send_message(thisClient, "You do no have any friends\n");
+                            send_message(thisClient, "You do not have any friends\n");
                         }
                     }
                     else if (incomingMessage.Contains("D-E-L-SEC-KEY"))
@@ -362,7 +362,7 @@ namespace server
                         if(deletee == deleter)
                         {
                             send_message(thisClient, "You cannot delete yourself :(\n");
-                            textBox_logs.AppendText(deletee + " is trying to delete himself :(\n");
+                            textBox_logs.AppendText(deletee + " is trying to delete himself/herself :(\n");
                             textBox_logs.ScrollToCaret();
                         }
                         else if (!registeredUsers.Contains(deletee))
@@ -402,7 +402,7 @@ namespace server
                         if(invitee == inviter)
                         {
                             send_message(thisClient, "You cannot be friend with yourself :(\n");
-                            textBox_logs.AppendText(name + " trying to add himself :( " + "\n");
+                            textBox_logs.AppendText(name + " trying to add himself/herself :( " + "\n");
                             textBox_logs.ScrollToCaret();
                         }
                         else if (friendDatabase.Contains(Tuple.Create(inviter, invitee)) || friendDatabase.Contains(Tuple.Create(invitee, inviter)))

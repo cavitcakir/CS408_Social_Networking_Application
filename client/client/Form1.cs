@@ -273,7 +273,7 @@ namespace client
             else
             {
                 textBox_invite.Text = "";
-                logBox.AppendText("Message length must between 1 and 10m\n");
+                logBox.AppendText("Name length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
         }
@@ -318,7 +318,10 @@ namespace client
 
         private void button_reflesh_Click(object sender, EventArgs e)
         {
+            button_reflesh.Enabled = false;
             send_message("R-E-F-L-E-S-H-SEC-KEY");
+            Thread.Sleep(1000);
+            button_reflesh.Enabled = true;
             friendListBox.Clear();
         }
 
