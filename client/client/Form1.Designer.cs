@@ -253,7 +253,7 @@
             this.button_reflesh.Name = "button_reflesh";
             this.button_reflesh.Size = new System.Drawing.Size(141, 25);
             this.button_reflesh.TabIndex = 31;
-            this.button_reflesh.Text = "Reflesh";
+            this.button_reflesh.Text = "Refresh";
             this.button_reflesh.UseVisualStyleBackColor = true;
             this.button_reflesh.Click += new System.EventHandler(this.button_reflesh_Click);
             // 

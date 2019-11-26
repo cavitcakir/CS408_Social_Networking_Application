@@ -43,51 +43,59 @@ namespace client
             {
                 if (Int32.TryParse(textBox_Port.Text, out portNum))
                 {
-                    try
+                    if (textBox_IP.Text != "")
                     {
-                        clientSocket.Connect(IP, portNum);
-                        send_message(name); // we send our username to server and wait for respond
-                        serverRespond = receiveOneMessage(); // we got our respond
-                        if (serverRespond != "already connected" && serverRespond != "not authorized")
+                        try
                         {
-                            button_accept.BackColor = Color.ForestGreen;
-                            button_reject.BackColor = Color.DarkRed;
-                            button_accept.Enabled = true;
-                            button_reflesh.Enabled = true;
-                            button_delete.Enabled = true;
-                            button_invite.BackColor = Color.DarkOliveGreen;
-                            button_delete.BackColor = Color.IndianRed;
-                            button_send_friends.Enabled = true;
-                            button_reject.Enabled = true;
-                            button_invite.Enabled = true;
-                            button_connect.Enabled = false;
-                            button_disconnect.Enabled = true;
-                            button_sendmessage.Enabled = true;
-                            textBox_Message.Enabled = true;
-                            connected = true;
-                            button_connect.Text = "Connected";
-                            button_connect.BackColor = System.Drawing.Color.Green;
-                            button_disconnect.BackColor = System.Drawing.Color.Red;
-                            logBox.AppendText("Connection established...\n");
-                            logBox.ScrollToCaret();
+                            clientSocket.Connect(IP, portNum);
+                            send_message(name); // we send our username to server and wait for respond
+                            serverRespond = receiveOneMessage(); // we got our respond
+                            if (serverRespond != "already connected" && serverRespond != "not authorized")
+                            {
+                                button_accept.BackColor = Color.ForestGreen;
+                                button_reject.BackColor = Color.DarkRed;
+                                button_accept.Enabled = true;
+                                button_reflesh.Enabled = true;
+                                button_delete.Enabled = true;
+                                button_invite.BackColor = Color.DarkOliveGreen;
+                                button_delete.BackColor = Color.IndianRed;
+                                button_send_friends.Enabled = true;
+                                button_reject.Enabled = true;
+                                button_invite.Enabled = true;
+                                button_connect.Enabled = false;
+                                button_disconnect.Enabled = true;
+                                button_sendmessage.Enabled = true;
+                                textBox_Message.Enabled = true;
+                                connected = true;
+                                button_connect.Text = "Connected";
+                                button_connect.BackColor = System.Drawing.Color.Green;
+                                button_disconnect.BackColor = System.Drawing.Color.Red;
+                                logBox.AppendText("Connection established...\n");
+                                logBox.ScrollToCaret();
 
-                            Thread receiveThread = new Thread(Receive);
-                            receiveThread.Start();
+                                Thread receiveThread = new Thread(Receive);
+                                receiveThread.Start();
+                            }
+                            else if (serverRespond == "not authorized")
+                            {
+                                logBox.AppendText("You are not registered.\n");
+                                logBox.ScrollToCaret();
+                            }
+                            else if (serverRespond == "already connected")
+                            {
+                                logBox.AppendText("You are already connected.\n");
+                                logBox.ScrollToCaret();
+                            }
                         }
-                        else if (serverRespond == "not authorized")
+                        catch
                         {
-                            logBox.AppendText("You are not registered.\n");
-                            logBox.ScrollToCaret();
-                        }
-                        else if (serverRespond == "already connected")
-                        {
-                            logBox.AppendText("You are already connected.\n");
+                            logBox.AppendText("Could not connect to the server!\n");
                             logBox.ScrollToCaret();
                         }
                     }
-                    catch
+                    else
                     {
-                        logBox.AppendText("Could not connect to the server!\n");
+                        logBox.AppendText("Check the IP\n");
                         logBox.ScrollToCaret();
                     }
                 }
@@ -255,7 +263,8 @@ namespace client
             string message = textBox_invite.Text;
             if (message != "" && message.Length <= 10000000)
             {
-                logBox.AppendText("Friend request sent to " + message + "\n");
+                if(message != name)
+                    logBox.AppendText("Friend request sent to " + message + "\n");
                 logBox.ScrollToCaret();
                 message = "I-N-V-SEC-KEY" + message;
                 textBox_invite.Text = "";
