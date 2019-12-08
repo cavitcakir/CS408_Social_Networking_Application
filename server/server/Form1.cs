@@ -73,7 +73,16 @@ namespace server
         }
         private void initializeFriendship(string name)
         {
+            
             Socket userSocket = clientSocketsDictionary[name];
+            string allUsers = "";
+            foreach (string item in registeredUsers)
+            {
+                allUsers += item;
+                allUsers += "\n";
+            }
+            send_message(userSocket, "R-E-G-SEC-KEY" + allUsers);
+            Thread.Sleep(200);
             foreach (var tuple in friendDatabase)
             {
                 if(tuple.Item1 == name && !notification_approve.Contains(Tuple.Create(tuple.Item2,name)))

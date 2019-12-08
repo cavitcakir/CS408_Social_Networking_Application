@@ -46,14 +46,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.button_accept = new System.Windows.Forms.Button();
             this.button_reject = new System.Windows.Forms.Button();
-            this.textBox_invite = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.button_invite = new System.Windows.Forms.Button();
             this.button_reflesh = new System.Windows.Forms.Button();
             this.button_send_friends = new System.Windows.Forms.Button();
-            this.textBox_delete = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.button_delete = new System.Windows.Forms.Button();
+            this.comboBox_name = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label2
@@ -219,28 +216,12 @@
             this.button_reject.UseVisualStyleBackColor = false;
             this.button_reject.Click += new System.EventHandler(this.button_reject_Click);
             // 
-            // textBox_invite
-            // 
-            this.textBox_invite.Location = new System.Drawing.Point(767, 139);
-            this.textBox_invite.Name = "textBox_invite";
-            this.textBox_invite.Size = new System.Drawing.Size(98, 20);
-            this.textBox_invite.TabIndex = 28;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(764, 123);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(68, 13);
-            this.label7.TabIndex = 29;
-            this.label7.Text = "Invite Friend:";
-            // 
             // button_invite
             // 
             this.button_invite.Enabled = false;
-            this.button_invite.Location = new System.Drawing.Point(871, 139);
+            this.button_invite.Location = new System.Drawing.Point(767, 161);
             this.button_invite.Name = "button_invite";
-            this.button_invite.Size = new System.Drawing.Size(50, 21);
+            this.button_invite.Size = new System.Drawing.Size(65, 21);
             this.button_invite.TabIndex = 30;
             this.button_invite.Text = "Invite!";
             this.button_invite.UseVisualStyleBackColor = true;
@@ -268,46 +249,36 @@
             this.button_send_friends.UseVisualStyleBackColor = true;
             this.button_send_friends.Click += new System.EventHandler(this.button_send_friends_Click);
             // 
-            // textBox_delete
-            // 
-            this.textBox_delete.Location = new System.Drawing.Point(767, 176);
-            this.textBox_delete.Name = "textBox_delete";
-            this.textBox_delete.Size = new System.Drawing.Size(98, 20);
-            this.textBox_delete.TabIndex = 33;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(764, 162);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(73, 13);
-            this.label8.TabIndex = 34;
-            this.label8.Text = "Delete Friend:";
-            // 
             // button_delete
             // 
             this.button_delete.Enabled = false;
-            this.button_delete.Location = new System.Drawing.Point(871, 176);
+            this.button_delete.Location = new System.Drawing.Point(856, 161);
             this.button_delete.Name = "button_delete";
-            this.button_delete.Size = new System.Drawing.Size(50, 21);
+            this.button_delete.Size = new System.Drawing.Size(63, 21);
             this.button_delete.TabIndex = 35;
             this.button_delete.Text = "Delete!";
             this.button_delete.UseVisualStyleBackColor = true;
             this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
             // 
+            // comboBox_name
+            // 
+            this.comboBox_name.Enabled = false;
+            this.comboBox_name.FormattingEnabled = true;
+            this.comboBox_name.Location = new System.Drawing.Point(767, 134);
+            this.comboBox_name.Name = "comboBox_name";
+            this.comboBox_name.Size = new System.Drawing.Size(152, 21);
+            this.comboBox_name.TabIndex = 36;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(931, 202);
+            this.ClientSize = new System.Drawing.Size(931, 209);
+            this.Controls.Add(this.comboBox_name);
             this.Controls.Add(this.button_delete);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.textBox_delete);
             this.Controls.Add(this.button_send_friends);
             this.Controls.Add(this.button_reflesh);
             this.Controls.Add(this.button_invite);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.textBox_invite);
             this.Controls.Add(this.button_reject);
             this.Controls.Add(this.button_accept);
             this.Controls.Add(this.label6);
@@ -353,14 +324,11 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button_accept;
         private System.Windows.Forms.Button button_reject;
-        private System.Windows.Forms.TextBox textBox_invite;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button_invite;
         private System.Windows.Forms.Button button_reflesh;
         private System.Windows.Forms.Button button_send_friends;
-        private System.Windows.Forms.TextBox textBox_delete;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button button_delete;
+        private System.Windows.Forms.ComboBox comboBox_name;
     }
 }
 

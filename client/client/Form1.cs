@@ -57,6 +57,7 @@ namespace client
                                 button_accept.Enabled = true;
                                 button_reflesh.Enabled = true;
                                 button_delete.Enabled = true;
+                                comboBox_name.Enabled = true;
                                 button_invite.BackColor = Color.DarkOliveGreen;
                                 button_delete.BackColor = Color.IndianRed;
                                 button_send_friends.Enabled = true;
@@ -137,7 +138,19 @@ namespace client
                     else if (incomingMessage.Contains("A-D-D-SEC-KEY"))
                     {
                         string newMes = incomingMessage.Substring(13) + "\n";
-                        friendListBox.AppendText(newMes);
+                        if (!friendListBox.Text.Contains(newMes))
+                        {
+                            friendListBox.AppendText(newMes);
+                        }
+                    }
+                    else if (incomingMessage.Contains("R-E-G-SEC-KEY"))
+                    {
+                        string newMes = incomingMessage.Substring(13);
+                        string[] names = newMes.Split('\n');
+                        foreach (string tempName in names)
+                        {
+                            comboBox_name.Items.Add(tempName);
+                        }
                     }
                     else if (incomingMessage.Contains("A-C-P-T-D-SEC-KEY"))
                     {
@@ -183,6 +196,8 @@ namespace client
                         button_delete.Enabled = false;
                         button_invite.BackColor = default(Color);
                         button_delete.BackColor = default(Color);
+                        comboBox_name.Enabled = false;
+                        comboBox_name.Items.Clear();
                         button_invite.Enabled = false;
                         button_send_friends.Enabled = false;
                         friendListBox.Clear();
@@ -238,6 +253,8 @@ namespace client
             button_delete.Enabled = false;
             button_delete.BackColor = default(Color);
             button_send_friends.Enabled = false;
+            comboBox_name.Enabled = false;
+            comboBox_name.Items.Clear();
             button_accept.Enabled = false;
             button_accept.BackColor = default(Color);
             button_reject.BackColor = default(Color);
@@ -260,19 +277,18 @@ namespace client
 
         private void button_invite_Click(object sender, EventArgs e)
         {
-            string message = textBox_invite.Text;
+            string message = comboBox_name.Text;
             if (message != "" && message.Length <= 10000000)
             {
                 if(message != name)
                     logBox.AppendText("Friend request sent to " + message + "\n");
                 logBox.ScrollToCaret();
                 message = "I-N-V-SEC-KEY" + message;
-                textBox_invite.Text = "";
                 send_message(message);
             }
             else
             {
-                textBox_invite.Text = "";
+                logBox.AppendText(message + "\n");
                 logBox.AppendText("Name length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
@@ -345,15 +361,13 @@ namespace client
 
         private void button_delete_Click(object sender, EventArgs e)
         {
-            string delete_name = textBox_delete.Text;
+            string delete_name = comboBox_name.SelectedText.ToString();
             if (delete_name != "" && delete_name.Length <= 10000000)
             {
-                textBox_delete.Text = "";
                 send_message("D-E-L-SEC-KEY" + delete_name);
             }
             else
             {
-                textBox_delete.Text = "";
                 logBox.AppendText("Name length must between 1 and 10m\n");
                 logBox.ScrollToCaret();
             }
