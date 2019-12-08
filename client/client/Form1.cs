@@ -361,7 +361,7 @@ namespace client
 
         private void button_delete_Click(object sender, EventArgs e)
         {
-            string delete_name = comboBox_name.SelectedText.ToString();
+            string delete_name = comboBox_name.Text;
             if (delete_name != "" && delete_name.Length <= 10000000)
             {
                 send_message("D-E-L-SEC-KEY" + delete_name);
