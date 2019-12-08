@@ -82,16 +82,18 @@ namespace server
                 allUsers += "\n";
             }
             send_message(userSocket, "R-E-G-SEC-KEY" + allUsers);
-            Thread.Sleep(200);
+            Thread.Sleep(500);
             foreach (var tuple in friendDatabase)
             {
                 if(tuple.Item1 == name && !notification_approve.Contains(Tuple.Create(tuple.Item2,name)))
                 {
+                    Thread.Sleep(500);
                     send_message(userSocket, "A-D-D-SEC-KEY" + tuple.Item2);
                     Thread.Sleep(500);
                 }
                 else if(tuple.Item2 == name && !notification_approve.Contains(Tuple.Create(name,tuple.Item2)))
                 {
+                    Thread.Sleep(500);
                     send_message(userSocket, "A-D-D-SEC-KEY" + tuple.Item1);
                     Thread.Sleep(500);
                 }
@@ -100,7 +102,8 @@ namespace server
             {
                 if (tuple.Item2 == name && initializeFriends == 0)
                 {
-                    if(!notification_sent.Contains(Tuple.Create(tuple.Item1, name)))
+                    Thread.Sleep(500);
+                    if (!notification_sent.Contains(Tuple.Create(tuple.Item1, name)))
                     {
                         notification_sent.Add(Tuple.Create(tuple.Item1, name));
                     }
@@ -216,6 +219,7 @@ namespace server
                         string invitee = newInvite.Item2;
                         if (clientSocketsDictionary.ContainsKey(invitee) && !notification_sent.Contains(newInvite) && initializeFriends == 1)
                         {
+                            Thread.Sleep(500);
                             Socket inviteeSocket = clientSocketsDictionary[invitee];
                             send_message(inviteeSocket, "R-Q-S-T-D-SEC-KEY" + inviter);
                             Thread.Sleep(500);
@@ -233,6 +237,7 @@ namespace server
                         string invitee = newNotification.Item1;
                         if (clientSocketsDictionary.ContainsKey(inviter))
                         {
+                            Thread.Sleep(500);
                             Socket inviterSocket = clientSocketsDictionary[inviter];
                             send_message(inviterSocket, "A-C-P-T-D-SEC-KEY" + invitee);
                             Thread.Sleep(500);
@@ -251,6 +256,7 @@ namespace server
                         string invitee = newNotification.Item1;
                         if (clientSocketsDictionary.ContainsKey(inviter))
                         {
+                            Thread.Sleep(500);
                             Socket inviterSocket = clientSocketsDictionary[inviter];
                             send_message(inviterSocket, "R-J-C-T-D-SEC-KEY" + invitee);
                             Thread.Sleep(500);
@@ -269,6 +275,7 @@ namespace server
                         string deletee = newNotification.Item2;
                         if (clientSocketsDictionary.ContainsKey(deletee))
                         {
+                            Thread.Sleep(500);
                             Socket deleteeSocket = clientSocketsDictionary[deletee];
                             send_message(deleteeSocket, "D-E-L-D-SEC-KEY" + deleter);
                             Thread.Sleep(500);
@@ -286,6 +293,7 @@ namespace server
                         string sendee = newNotification.Item2;
                         if (clientSocketsDictionary.ContainsKey(sendee))
                         {
+                            Thread.Sleep(500);
                             Socket sendeeSocket = clientSocketsDictionary[sendee];
                             string message = pending_messages[i];
                             send_message(sendeeSocket, message);
