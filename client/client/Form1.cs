@@ -198,6 +198,7 @@ namespace client
                         button_delete.BackColor = default(Color);
                         comboBox_name.Enabled = false;
                         comboBox_name.Items.Clear();
+                        comboBox_name.ResetText();
                         button_invite.Enabled = false;
                         button_send_friends.Enabled = false;
                         friendListBox.Clear();
@@ -255,6 +256,7 @@ namespace client
             button_send_friends.Enabled = false;
             comboBox_name.Enabled = false;
             comboBox_name.Items.Clear();
+            comboBox_name.ResetText();
             button_accept.Enabled = false;
             button_accept.BackColor = default(Color);
             button_reject.BackColor = default(Color);
@@ -285,7 +287,9 @@ namespace client
                 logBox.ScrollToCaret();
                 message = "I-N-V-SEC-KEY" + message;
                 send_message(message);
+                comboBox_name.ResetText();
             }
+ 
             else
             {
                 logBox.AppendText(message + "\n");
@@ -365,6 +369,7 @@ namespace client
             if (delete_name != "" && delete_name.Length <= 10000000)
             {
                 send_message("D-E-L-SEC-KEY" + delete_name);
+                comboBox_name.ResetText();
             }
             else
             {
