@@ -88,9 +88,6 @@ As in the step 1 and 2, all of the operations must be clearly shown on the clien
 
 For programming rules and submission specifications, please read the corresponding sections at the end of this document.
 
-### Group Work
-- You can work in groups of minimum two and maximum four people for all steps. You may change groups between steps 1 and 2; however, no group changes are allowed between steps 2 and 3.
-- Equal distribution of the work among the group members is essential. All members of the group should submit all the codes for both client and server. All members should be present during the demos.
 
 ### Programming Rules
 - Preferred languages are C#, Java and Python, but C# is recommended.
@@ -100,23 +97,4 @@ application!
 - Your code should be clearly commented. This affects up to 10% of your grade.
 - Your program should be portable. It should not require any dependencies specific to your computer. We will download, compile and run it. If it does not run, it means that
 your program is not running. So do test your program before submission.
-### Submission
-- Submit your work to SUCourse. Each step will be submitted and graded separately.
-- Delete the content of debug folders in your project directory before submission.
-- Create a folder named Server and put your server related codes here.
-- Create a folder named Client and put your client related codes here.
-- Create a folder named XXXX_Surname_Name_StepY, where XXXX is your SUNet ID and Y is the project step (1, 2 or 3) (e.g. fkerem_Ors_FaikKerem_Step1). Put your Server and Client folders into this folder.
-o Compress your XXXX_Surname_Name_StepY folder using ZIP or RAR.
-- You will be invited for a demonstration of your work. Date and other details about the
-demo will be announced later.
-- 24 hours late submission is possible with 10 points penalty (out of 100).
 
-We encourage the use of SUCourse Discussion module for the general questions related to the project. For personal questions and support, you can send email to course TAs.
-
-Good luck!
-
-Faik Kerem ÖRS - fkerem@sabanciuniv.edu
-Mustafa AYDIN - mustafaaydin@sabanciuniv.edu 
-Oğuz ÖZSAYGIN - oguzozsaygin@sabanciuniv.edu 
-Yusuf Arslan POLAT - yusufarslan@sabanciuniv.edu 
-Albert LEVİ
